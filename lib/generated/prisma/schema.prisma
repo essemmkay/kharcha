@@ -1,0 +1,107 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../lib/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum AccountType {
+  BANK
+  CASH
+  ASSET
+}
+
+enum CategoryKind {
+  INCOME
+  EXPENSE
+}
+
+enum TransactionType {
+  INCOME
+  EXPENSE
+  TRANSFER
+}
+
+model User {
+  id           String        @id @default(cuid())
+  authId       String        @unique
+  email        String        @unique
+  name         String?
+  baseCurrency String        @default("USD")
+  createdAt    DateTime      @default(now())
+  accounts     Account[]
+  categories   Category[]
+  transactions Transaction[]
+  tags         Tag[]
+}
+
+model Account {
+  id             String        @id @default(cuid())
+  userId         String
+  user           User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name           String
+  type           AccountType
+  currency       String        @default("USD")
+  openingBalance Decimal       @default(0) @db.Decimal(14, 2)
+  note           String?
+  archived       Boolean       @default(false)
+  createdAt      DateTime      @default(now())
+  transactions   Transaction[] @relation("AccountTransactions")
+  transfersIn    Transaction[] @relation("TransferToAccount")
+
+  @@index([userId])
+}
+
+model Category {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  kind         CategoryKind
+  icon         String?
+  color        String?
+  parentId     String?
+  parent       Category?     @relation("Subcategories", fields: [parentId], references: [id], onDelete: SetNull)
+  children     Category[]    @relation("Subcategories")
+  archived     Boolean       @default(false)
+  transactions Transaction[]
+
+  @@unique([userId, kind, name, parentId])
+  @@index([userId])
+}
+
+model Transaction {
+  id          String          @id @default(cuid())
+  userId      String
+  user        User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  type        TransactionType
+  amount      Decimal         @db.Decimal(14, 2)
+  date        DateTime
+  accountId   String
+  account     Account         @relation("AccountTransactions", fields: [accountId], references: [id], onDelete: Cascade)
+  toAccountId String?
+  toAccount   Account?        @relation("TransferToAccount", fields: [toAccountId], references: [id], onDelete: Cascade)
+  categoryId  String?
+  category    Category?       @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  note        String?
+  tags        Tag[]           @relation("TransactionTags")
+  createdAt   DateTime        @default(now())
+
+  @@index([userId, date])
+  @@index([accountId])
+  @@index([toAccountId])
+  @@index([categoryId])
+}
+
+model Tag {
+  id           String        @id @default(cuid())
+  userId       String
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  transactions Transaction[] @relation("TransactionTags")
+
+  @@unique([userId, name])
+  @@index([userId])
+}
