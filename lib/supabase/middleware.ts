@@ -37,7 +37,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   const { pathname } = request.nextUrl;
-  const isAuthPage = pathname === "/login" || pathname === "/signup";
+  const isAuthPage = pathname === "/login";
   const isPublic = isAuthPage || pathname === "/";
 
   if (!user && !isPublic) {

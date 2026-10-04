@@ -111,3 +111,12 @@ Local: `.env.local`. Production: Vercel project env settings.
 - Single currency per account is supported; cross-currency net worth (FX) is out of scope for v1. Net worth sums balances as-is and assumes one base currency in practice.
 - Attachments are deferred to v2 (free object storage adds complexity); noted in PRD non-goals.
 - DB choice is Supabase (justified in ARCHITECTURE.md). Change here and in ARCHITECTURE.md together if revisited.
+
+## 11. Implementation notes (deviations from the original docs)
+
+The docs were written before scaffolding. The build pinned to current releases and adapted:
+- Versions: Next.js 16 (App Router), React 19, Tailwind v4 (CSS-first `@theme` in `app/globals.css`, no `tailwind.config`), Prisma 7, zod 4, Recharts 3. "Next 14+" in the stack is satisfied by 16.
+- Prisma 7 requires a driver adapter and moves connection URLs out of the schema. Runtime uses `@prisma/adapter-pg` with the pooled `DATABASE_URL` (`lib/prisma.ts`); the CLI uses `DIRECT_URL` via `prisma.config.ts`. The client is generated to `lib/generated/prisma`, and `.npmrc` hoists `@prisma/*` so that custom-output client resolves under pnpm.
+- Forms are controlled components with server-side zod as the single validation authority (see section 4), not react-hook-form + zodResolver.
+- Transaction row interaction is tap-to-edit (delete lives on the edit page). Swipe-to-delete from DESIGN.md is deferred.
+- Backup is implemented as a GitHub Actions `pg_dump` cron (`.github/workflows/backup.yml`); the optional `/api/backup` route handler was not needed.

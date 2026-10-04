@@ -13,24 +13,10 @@ export async function signIn(
   redirect("/dashboard");
 }
 
-export async function signUp(
-  email: string,
-  password: string,
-  name?: string,
-): Promise<{ error?: string }> {
-  const supabase = await createClient();
-  const { data, error } = await supabase.auth.signUp({
-    email,
-    password,
-    options: { data: name ? { name } : undefined },
-  });
-  if (error) return { error: error.message };
-  // Email verification is off for v1, so a session is returned immediately.
-  if (!data.session) {
-    return { error: "Check your email to confirm your account, then log in." };
-  }
-  redirect("/dashboard");
-}
+// Signup is disabled for v1 (single-user app). Create your one user in the
+// Supabase dashboard (Authentication > Users) and also turn off "Allow new
+// users to sign up" in Supabase auth settings. Re-add a signUp action here when
+// opening the app to multiple users.
 
 export async function signOut() {
   const supabase = await createClient();

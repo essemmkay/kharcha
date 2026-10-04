@@ -24,10 +24,14 @@ driver adapter) · Supabase (Postgres + Auth) · Recharts · date-fns · jsPDF.
 ## 1. Create the Supabase project (free, no card)
 
 1. Create a project at https://supabase.com.
-2. Authentication > Providers > Email: keep Email enabled. For v1, turn **off**
-   "Confirm email" (Authentication > Sign In / Providers) so signup logs in
-   immediately.
-3. Copy connection strings and keys into `.env.local` (see `.env.example`):
+2. Authentication > Sign In / Providers > Email: keep Email enabled, and turn
+   **off** "Allow new users to sign up" (signup is disabled in the app for v1,
+   and this enforces it server-side too).
+3. Create your single user: Authentication > Users > Add user. Set a password
+   and mark the email as confirmed. This is how you log in; there is no in-app
+   signup. (To open the app to more users later, re-enable Supabase signups and
+   add a `signUp` action + `/signup` route back.)
+4. Copy connection strings and keys into `.env.local` (see `.env.example`):
    - Project Settings > Database: the pooled "Transaction" string into
      `DATABASE_URL` (add `?pgbouncer=true`) and the "Direct connection" string
      into `DIRECT_URL`.

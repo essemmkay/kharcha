@@ -14,7 +14,7 @@ export default function LoginPage() {
             Log in to Kharcha to track your money.
           </p>
         </div>
-        <AuthForm mode="login" />
+        <AuthForm />
       </div>
     </main>
   );
