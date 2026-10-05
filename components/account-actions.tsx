@@ -3,7 +3,7 @@
 import { useTransition } from "react";
 import { toast } from "sonner";
 import { Archive, ArchiveRestore, Pencil, Trash2 } from "lucide-react";
-import { deleteAccount, setAccountArchived } from "@/lib/actions/accounts";
+import { deleteAccount, setAccountArchived } from "@/lib/sync/local-writes";
 import { AccountSheet } from "@/components/account-sheet";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";

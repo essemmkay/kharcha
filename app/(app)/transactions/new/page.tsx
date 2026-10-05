@@ -1,14 +1,23 @@
+"use client";
+
+import { useMemo } from "react";
 import Link from "next/link";
 import { ChevronLeft, Wallet } from "lucide-react";
-import { requireUser } from "@/lib/auth";
-import { getFormOptions } from "@/lib/form-options";
+import { useLocalData } from "@/lib/db/use-local-data";
+import { formOptions } from "@/lib/local-queries";
 import { TransactionForm } from "@/components/transaction-form";
 import { EmptyState } from "@/components/empty-state";
+import { PageLoading } from "@/components/page-loading";
 import { Button } from "@/components/ui/button";
 
-export default async function NewTransactionPage() {
-  const user = await requireUser();
-  const { accounts, categories } = await getFormOptions(user.id);
+export default function NewTransactionPage() {
+  const { ready, accounts, categories } = useLocalData();
+  const { accounts: accOpts, categories: catOpts } = useMemo(
+    () => formOptions(accounts, categories),
+    [accounts, categories],
+  );
+
+  if (!ready) return <PageLoading />;
 
   return (
     <div className="space-y-4">
@@ -20,7 +29,7 @@ export default async function NewTransactionPage() {
       </Link>
       <h1 className="text-xl font-semibold tracking-tight">Add transaction</h1>
 
-      {accounts.length === 0 ? (
+      {accOpts.length === 0 ? (
         <EmptyState
           icon={Wallet}
           title="Create an account first"
@@ -32,7 +41,7 @@ export default async function NewTransactionPage() {
           }
         />
       ) : (
-        <TransactionForm accounts={accounts} categories={categories} />
+        <TransactionForm accounts={accOpts} categories={catOpts} />
       )}
     </div>
   );

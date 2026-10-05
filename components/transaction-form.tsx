@@ -5,12 +5,7 @@ import { useRouter } from "next/navigation";
 import { format } from "date-fns";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
-import {
-  deleteTransaction,
-  updateTransaction,
-} from "@/lib/actions/transactions";
-import { enqueue } from "@/lib/sync/outbox";
-import type { TxRow } from "@/lib/tx-row";
+import { deleteTransaction, saveTransaction } from "@/lib/sync/local-writes";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -94,59 +89,27 @@ export function TransactionForm({
       .map((t) => t.trim())
       .filter(Boolean);
 
-    const base = { amount, date, accountId, note, tags: tagList };
+    const base = { id: transaction?.id, amount, date, accountId, note, tags: tagList };
     const input =
       type === "TRANSFER"
         ? { ...base, type, toAccountId }
         : { ...base, type, categoryId: effectiveCategory };
 
-    // Edits of an existing row stay direct-to-server.
-    if (transaction) {
-      startTransition(async () => {
-        const res = await updateTransaction(transaction.id, input);
-        if (!res.ok) {
-          toast.error(res.error);
-          return;
-        }
-        toast.success("Transaction updated");
-        router.push("/transactions");
-        router.refresh();
-      });
-      return;
-    }
-
-    // New transactions go into the outbox: show instantly, sync in background.
-    const acc = accounts.find((a) => a.id === accountId);
-    const display: TxRow = {
-      id: crypto.randomUUID(),
-      type,
-      amount: Number(amount),
-      date: new Date(date).toISOString(),
-      account: acc?.name ?? "",
-      toAccount:
-        type === "TRANSFER"
-          ? accounts.find((a) => a.id === toAccountId)?.name ?? null
-          : null,
-      category:
-        type === "TRANSFER"
-          ? null
-          : catOptions.find((c) => c.id === effectiveCategory)?.name ?? null,
-      categoryColor: null,
-      note: note || null,
-      currency: acc?.currency ?? "USD",
-      tags: tagList,
-    };
-    enqueue(input, display);
-    toast.success("Transaction added");
-    router.push("/transactions");
+    // Create and edit both write locally (instant) and queue for background sync.
+    startTransition(async () => {
+      const res = await saveTransaction(input);
+      if (!res.ok) {
+        toast.error(res.error);
+        return;
+      }
+      toast.success(transaction ? "Transaction updated" : "Transaction added");
+      router.push("/transactions");
+    });
   }
 
   function remove() {
     return deleteTransaction(transaction!.id).then((res) => {
-      if (res.ok) {
-        router.push("/transactions");
-        router.refresh();
-      }
+      if (res.ok) router.push("/transactions");
       return res;
     });
   }

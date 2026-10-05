@@ -17,9 +17,9 @@ Goals:
 - Export a PDF expense report for any date range.
 - Own the data; it lives in my own Postgres and survives a phone switch.
 - Zero hosting cost.
-- Adding a transaction is instant and works through a flaky or absent connection: it shows immediately and syncs in the background, with a visible count of unsynced items and a manual "Sync now".
+- **Offline-first**: the whole app works with no connection. The device owns the full dataset locally; every read renders instantly from the local store and every write (add/edit/delete of accounts, categories, transactions) applies immediately and syncs in the background. A visible count of unsynced changes plus a manual "Sync now" is shown, and server-rejected changes can be discarded. Sync is incremental delta (push the local queue, pull only rows changed since last sync, including deletions). See CLAUDE.md §12 / ARCHITECTURE.md §6.
 
-Non-goals (v1): bank sync, multi-currency FX conversion, budgets, recurring transactions, shared accounts, native mobile app, receipt OCR, attachments.
+Non-goals (v1): bank sync, multi-currency FX conversion, budgets, recurring transactions, shared accounts, native mobile app, receipt OCR, attachments. Multi-device concurrent editing is supported only under last-write-wins (single user assumed); profile edits (name/base currency) require a connection.
 
 ## 4. User stories
 

@@ -1,11 +1,13 @@
+"use client";
+
+import { useMemo } from "react";
 import { Plus, Tag } from "lucide-react";
-import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { useLocalData } from "@/lib/db/use-local-data";
 import { CategorySheet } from "@/components/category-sheet";
 import { CategoryActions } from "@/components/category-actions";
 import { EmptyState } from "@/components/empty-state";
+import { PageLoading } from "@/components/page-loading";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 type Cat = { id: string; name: string; kind: "INCOME" | "EXPENSE"; parentId: string | null };
@@ -66,15 +68,24 @@ function CategoryList({ kind, cats }: { kind: "INCOME" | "EXPENSE"; cats: Cat[] 
   );
 }
 
-export default async function CategoriesPage() {
-  const user = await requireUser();
-  const cats = await prisma.category.findMany({
-    where: { userId: user.id },
-    orderBy: [{ parentId: "asc" }, { name: "asc" }],
-    select: { id: true, name: true, kind: true, parentId: true },
-  });
-  const expense = cats.filter((c) => c.kind === "EXPENSE");
-  const income = cats.filter((c) => c.kind === "INCOME");
+export default function CategoriesPage() {
+  const { ready, categories } = useLocalData();
+
+  const { expense, income } = useMemo(() => {
+    const cats = categories
+      .map((c) => ({ id: c.id, name: c.name, kind: c.kind, parentId: c.parentId }))
+      .sort(
+        (a, b) =>
+          (a.parentId ?? "").localeCompare(b.parentId ?? "") ||
+          a.name.localeCompare(b.name),
+      );
+    return {
+      expense: cats.filter((c) => c.kind === "EXPENSE"),
+      income: cats.filter((c) => c.kind === "INCOME"),
+    };
+  }, [categories]);
+
+  if (!ready) return <PageLoading />;
 
   return (
     <div className="space-y-4">

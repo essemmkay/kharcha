@@ -1,43 +1,33 @@
 "use client";
 
 import { ReceiptText } from "lucide-react";
+import { useLiveQuery } from "dexie-react-hooks";
 import { TransactionRow } from "@/components/transaction-row";
 import { EmptyState } from "@/components/empty-state";
-import { useOutbox } from "@/lib/sync/use-outbox";
+import { db } from "@/lib/db/local";
 import type { TxRow } from "@/lib/tx-row";
-
-type TxType = TxRow["type"];
 
 export function TransactionList({
   rows,
-  pendingFilter,
   emptyTitle = "Nothing here yet",
   emptyDescription = "Tap + to add your first income or expense.",
 }: {
   rows: TxRow[];
-  // Restrict which unsynced creates to show, matching the page's own filters.
-  pendingFilter?: { type?: TxType; accountId?: string };
   emptyTitle?: string;
   emptyDescription?: string;
 }) {
-  const { pending } = useOutbox();
+  // Rows come from the local store already; mark the ones still in the sync
+  // queue (not yet confirmed by the server) as unsynced.
+  const pendingIds = useLiveQuery(
+    async () => {
+      const q = await db.queue.where("entity").equals("transaction").toArray();
+      return new Set(q.map((m) => m.recordId));
+    },
+    [],
+    new Set<string>(),
+  );
 
-  const pendingRows = pending
-    .filter((e) => {
-      if (pendingFilter?.type && e.display.type !== pendingFilter.type) return false;
-      if (pendingFilter?.accountId) {
-        const inp = e.input as { accountId?: string; toAccountId?: string };
-        if (
-          inp.accountId !== pendingFilter.accountId &&
-          inp.toAccountId !== pendingFilter.accountId
-        )
-          return false;
-      }
-      return true;
-    })
-    .map((e) => e.display);
-
-  if (rows.length === 0 && pendingRows.length === 0) {
+  if (rows.length === 0) {
     return (
       <EmptyState
         icon={ReceiptText}
@@ -48,11 +38,8 @@ export function TransactionList({
   }
   return (
     <div className="divide-y">
-      {pendingRows.map((tx) => (
-        <TransactionRow key={tx.id} tx={tx} unsynced />
-      ))}
       {rows.map((tx) => (
-        <TransactionRow key={tx.id} tx={tx} />
+        <TransactionRow key={tx.id} tx={tx} unsynced={pendingIds.has(tx.id)} />
       ))}
     </div>
   );

@@ -1,7 +1,7 @@
 "use client";
 
 import { Pencil, Trash2 } from "lucide-react";
-import { deleteCategory } from "@/lib/actions/categories";
+import { deleteCategory } from "@/lib/sync/local-writes";
 import { CategorySheet } from "@/components/category-sheet";
 import { ConfirmDialog } from "@/components/confirm-dialog";
 import { Button } from "@/components/ui/button";

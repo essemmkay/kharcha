@@ -197,9 +197,19 @@ Settings
 Route handler
 - `GET /api/backup` (cron, token-guarded): triggers or confirms the logical dump. Primary backup is the GitHub Actions cron (section 10).
 
-## 6. Data fetching strategy
+## 6. Data fetching strategy (offline-first / local-first)
 
-RSC for all reads, driven by URL search params (`?month=`, `?account=`, `?from=`, `?to=`). Server actions for all writes, followed by `revalidatePath`. No SWR/React Query in v1; the only client state is form state (react-hook-form) and the segmented transaction-type control.
+> Superseded the original "RSC for all reads" model. See CLAUDE.md §12 for the file-by-file map.
+
+The device owns the full dataset in IndexedDB (Dexie, `lib/db/local.ts`). Reads render from the local store via pure aggregations (`lib/local-queries.ts`) and `useLiveQuery`; URL search params (`?month=`/`?account=`/`?type=`/`?from=`/`?to=`) are read client-side. Writes go through `lib/sync/local-writes.ts` (validate → write Dexie → enqueue).
+
+**Incremental delta sync** (`lib/sync/engine.ts`): `push()` replays the ordered local mutation queue through the existing server actions, which are idempotent because creates carry client-authoritative ids (`upsert`). `pull()` calls `pullChanges(since)` (`lib/actions/sync.ts`), returning every row per entity with `updatedAt > since` including tombstones, and merges them (upsert live / delete tombstoned), advancing the `lastSync` cursor. Triggers: mount, `online`, tab-visible, post-write.
+
+**Schema support**: every synced model carries `updatedAt @updatedAt`, `deletedAt` (tombstone), and `@@index([userId, updatedAt])`. Deletes are soft with application-level cascade (DB `onDelete` cascades don't emit tombstones). Reads filter `deletedAt: null`.
+
+**Offline shell**: `public/sw.js` (`kharcha-v2`) serves HTML navigations and Next RSC fetches stale-while-revalidate, keyed by pathname. The `(app)` server layout still runs `requireUser()` for auth gating when online.
+
+**Conflict policy**: last-write-wins by `updatedAt` (correct under the single-user assumption). Ceilings: tombstone GC and queued profile edits are future work.
 
 ## 7. Security
 

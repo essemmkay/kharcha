@@ -2702,6 +2702,8 @@ export namespace Prisma {
     note: string | null
     archived: boolean | null
     createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type AccountMaxAggregateOutputType = {
@@ -2714,6 +2716,8 @@ export namespace Prisma {
     note: string | null
     archived: boolean | null
     createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type AccountCountAggregateOutputType = {
@@ -2726,6 +2730,8 @@ export namespace Prisma {
     note: number
     archived: number
     createdAt: number
+    updatedAt: number
+    deletedAt: number
     _all: number
   }
 
@@ -2748,6 +2754,8 @@ export namespace Prisma {
     note?: true
     archived?: true
     createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type AccountMaxAggregateInputType = {
@@ -2760,6 +2768,8 @@ export namespace Prisma {
     note?: true
     archived?: true
     createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type AccountCountAggregateInputType = {
@@ -2772,6 +2782,8 @@ export namespace Prisma {
     note?: true
     archived?: true
     createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
     _all?: true
   }
 
@@ -2871,6 +2883,8 @@ export namespace Prisma {
     note: string | null
     archived: boolean
     createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
     _count: AccountCountAggregateOutputType | null
     _avg: AccountAvgAggregateOutputType | null
     _sum: AccountSumAggregateOutputType | null
@@ -2902,6 +2916,8 @@ export namespace Prisma {
     note?: boolean
     archived?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     transactions?: boolean | Account$transactionsArgs<ExtArgs>
     transfersIn?: boolean | Account$transfersInArgs<ExtArgs>
@@ -2918,6 +2934,8 @@ export namespace Prisma {
     note?: boolean
     archived?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["account"]>
 
@@ -2931,6 +2949,8 @@ export namespace Prisma {
     note?: boolean
     archived?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["account"]>
 
@@ -2944,9 +2964,11 @@ export namespace Prisma {
     note?: boolean
     archived?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
   }
 
-  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "type" | "currency" | "openingBalance" | "note" | "archived" | "createdAt", ExtArgs["result"]["account"]>
+  export type AccountOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "type" | "currency" | "openingBalance" | "note" | "archived" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["account"]>
   export type AccountInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     transactions?: boolean | Account$transactionsArgs<ExtArgs>
@@ -2977,6 +2999,8 @@ export namespace Prisma {
       note: string | null
       archived: boolean
       createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
     }, ExtArgs["result"]["account"]>
     composites: {}
   }
@@ -3412,6 +3436,8 @@ export namespace Prisma {
     readonly note: FieldRef<"Account", 'String'>
     readonly archived: FieldRef<"Account", 'Boolean'>
     readonly createdAt: FieldRef<"Account", 'DateTime'>
+    readonly updatedAt: FieldRef<"Account", 'DateTime'>
+    readonly deletedAt: FieldRef<"Account", 'DateTime'>
   }
     
 
@@ -3898,6 +3924,9 @@ export namespace Prisma {
     color: string | null
     parentId: string | null
     archived: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type CategoryMaxAggregateOutputType = {
@@ -3909,6 +3938,9 @@ export namespace Prisma {
     color: string | null
     parentId: string | null
     archived: boolean | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type CategoryCountAggregateOutputType = {
@@ -3920,6 +3952,9 @@ export namespace Prisma {
     color: number
     parentId: number
     archived: number
+    createdAt: number
+    updatedAt: number
+    deletedAt: number
     _all: number
   }
 
@@ -3933,6 +3968,9 @@ export namespace Prisma {
     color?: true
     parentId?: true
     archived?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type CategoryMaxAggregateInputType = {
@@ -3944,6 +3982,9 @@ export namespace Prisma {
     color?: true
     parentId?: true
     archived?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type CategoryCountAggregateInputType = {
@@ -3955,6 +3996,9 @@ export namespace Prisma {
     color?: true
     parentId?: true
     archived?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
     _all?: true
   }
 
@@ -4039,6 +4083,9 @@ export namespace Prisma {
     color: string | null
     parentId: string | null
     archived: boolean
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
     _count: CategoryCountAggregateOutputType | null
     _min: CategoryMinAggregateOutputType | null
     _max: CategoryMaxAggregateOutputType | null
@@ -4067,6 +4114,9 @@ export namespace Prisma {
     color?: boolean
     parentId?: boolean
     archived?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
     children?: boolean | Category$childrenArgs<ExtArgs>
@@ -4083,6 +4133,9 @@ export namespace Prisma {
     color?: boolean
     parentId?: boolean
     archived?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
@@ -4096,6 +4149,9 @@ export namespace Prisma {
     color?: boolean
     parentId?: boolean
     archived?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
   }, ExtArgs["result"]["category"]>
@@ -4109,9 +4165,12 @@ export namespace Prisma {
     color?: boolean
     parentId?: boolean
     archived?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
   }
 
-  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "kind" | "icon" | "color" | "parentId" | "archived", ExtArgs["result"]["category"]>
+  export type CategoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "kind" | "icon" | "color" | "parentId" | "archived" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["category"]>
   export type CategoryInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     parent?: boolean | Category$parentArgs<ExtArgs>
@@ -4145,6 +4204,9 @@ export namespace Prisma {
       color: string | null
       parentId: string | null
       archived: boolean
+      createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
     }, ExtArgs["result"]["category"]>
     composites: {}
   }
@@ -4580,6 +4642,9 @@ export namespace Prisma {
     readonly color: FieldRef<"Category", 'String'>
     readonly parentId: FieldRef<"Category", 'String'>
     readonly archived: FieldRef<"Category", 'Boolean'>
+    readonly createdAt: FieldRef<"Category", 'DateTime'>
+    readonly updatedAt: FieldRef<"Category", 'DateTime'>
+    readonly deletedAt: FieldRef<"Category", 'DateTime'>
   }
     
 
@@ -5097,6 +5162,8 @@ export namespace Prisma {
     categoryId: string | null
     note: string | null
     createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type TransactionMaxAggregateOutputType = {
@@ -5110,6 +5177,8 @@ export namespace Prisma {
     categoryId: string | null
     note: string | null
     createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type TransactionCountAggregateOutputType = {
@@ -5123,6 +5192,8 @@ export namespace Prisma {
     categoryId: number
     note: number
     createdAt: number
+    updatedAt: number
+    deletedAt: number
     _all: number
   }
 
@@ -5146,6 +5217,8 @@ export namespace Prisma {
     categoryId?: true
     note?: true
     createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type TransactionMaxAggregateInputType = {
@@ -5159,6 +5232,8 @@ export namespace Prisma {
     categoryId?: true
     note?: true
     createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type TransactionCountAggregateInputType = {
@@ -5172,6 +5247,8 @@ export namespace Prisma {
     categoryId?: true
     note?: true
     createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
     _all?: true
   }
 
@@ -5272,6 +5349,8 @@ export namespace Prisma {
     categoryId: string | null
     note: string | null
     createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
     _count: TransactionCountAggregateOutputType | null
     _avg: TransactionAvgAggregateOutputType | null
     _sum: TransactionSumAggregateOutputType | null
@@ -5304,6 +5383,8 @@ export namespace Prisma {
     categoryId?: boolean
     note?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     toAccount?: boolean | Transaction$toAccountArgs<ExtArgs>
@@ -5323,6 +5404,8 @@ export namespace Prisma {
     categoryId?: boolean
     note?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     toAccount?: boolean | Transaction$toAccountArgs<ExtArgs>
@@ -5340,6 +5423,8 @@ export namespace Prisma {
     categoryId?: boolean
     note?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
     toAccount?: boolean | Transaction$toAccountArgs<ExtArgs>
@@ -5357,9 +5442,11 @@ export namespace Prisma {
     categoryId?: boolean
     note?: boolean
     createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
   }
 
-  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "amount" | "date" | "accountId" | "toAccountId" | "categoryId" | "note" | "createdAt", ExtArgs["result"]["transaction"]>
+  export type TransactionOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "type" | "amount" | "date" | "accountId" | "toAccountId" | "categoryId" | "note" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["transaction"]>
   export type TransactionInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     account?: boolean | AccountDefaultArgs<ExtArgs>
@@ -5401,6 +5488,8 @@ export namespace Prisma {
       categoryId: string | null
       note: string | null
       createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
     }, ExtArgs["result"]["transaction"]>
     composites: {}
   }
@@ -5839,6 +5928,8 @@ export namespace Prisma {
     readonly categoryId: FieldRef<"Transaction", 'String'>
     readonly note: FieldRef<"Transaction", 'String'>
     readonly createdAt: FieldRef<"Transaction", 'DateTime'>
+    readonly updatedAt: FieldRef<"Transaction", 'DateTime'>
+    readonly deletedAt: FieldRef<"Transaction", 'DateTime'>
   }
     
 
@@ -6334,18 +6425,27 @@ export namespace Prisma {
     id: string | null
     userId: string | null
     name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type TagMaxAggregateOutputType = {
     id: string | null
     userId: string | null
     name: string | null
+    createdAt: Date | null
+    updatedAt: Date | null
+    deletedAt: Date | null
   }
 
   export type TagCountAggregateOutputType = {
     id: number
     userId: number
     name: number
+    createdAt: number
+    updatedAt: number
+    deletedAt: number
     _all: number
   }
 
@@ -6354,18 +6454,27 @@ export namespace Prisma {
     id?: true
     userId?: true
     name?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type TagMaxAggregateInputType = {
     id?: true
     userId?: true
     name?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
   }
 
   export type TagCountAggregateInputType = {
     id?: true
     userId?: true
     name?: true
+    createdAt?: true
+    updatedAt?: true
+    deletedAt?: true
     _all?: true
   }
 
@@ -6445,6 +6554,9 @@ export namespace Prisma {
     id: string
     userId: string
     name: string
+    createdAt: Date
+    updatedAt: Date
+    deletedAt: Date | null
     _count: TagCountAggregateOutputType | null
     _min: TagMinAggregateOutputType | null
     _max: TagMaxAggregateOutputType | null
@@ -6468,6 +6580,9 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
     transactions?: boolean | Tag$transactionsArgs<ExtArgs>
     _count?: boolean | TagCountOutputTypeDefaultArgs<ExtArgs>
@@ -6477,6 +6592,9 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tag"]>
 
@@ -6484,6 +6602,9 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
     user?: boolean | UserDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["tag"]>
 
@@ -6491,9 +6612,12 @@ export namespace Prisma {
     id?: boolean
     userId?: boolean
     name?: boolean
+    createdAt?: boolean
+    updatedAt?: boolean
+    deletedAt?: boolean
   }
 
-  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name", ExtArgs["result"]["tag"]>
+  export type TagOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "userId" | "name" | "createdAt" | "updatedAt" | "deletedAt", ExtArgs["result"]["tag"]>
   export type TagInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     user?: boolean | UserDefaultArgs<ExtArgs>
     transactions?: boolean | Tag$transactionsArgs<ExtArgs>
@@ -6516,6 +6640,9 @@ export namespace Prisma {
       id: string
       userId: string
       name: string
+      createdAt: Date
+      updatedAt: Date
+      deletedAt: Date | null
     }, ExtArgs["result"]["tag"]>
     composites: {}
   }
@@ -6944,6 +7071,9 @@ export namespace Prisma {
     readonly id: FieldRef<"Tag", 'String'>
     readonly userId: FieldRef<"Tag", 'String'>
     readonly name: FieldRef<"Tag", 'String'>
+    readonly createdAt: FieldRef<"Tag", 'DateTime'>
+    readonly updatedAt: FieldRef<"Tag", 'DateTime'>
+    readonly deletedAt: FieldRef<"Tag", 'DateTime'>
   }
     
 
@@ -7422,7 +7552,9 @@ export namespace Prisma {
     openingBalance: 'openingBalance',
     note: 'note',
     archived: 'archived',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
   };
 
   export type AccountScalarFieldEnum = (typeof AccountScalarFieldEnum)[keyof typeof AccountScalarFieldEnum]
@@ -7436,7 +7568,10 @@ export namespace Prisma {
     icon: 'icon',
     color: 'color',
     parentId: 'parentId',
-    archived: 'archived'
+    archived: 'archived',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
   };
 
   export type CategoryScalarFieldEnum = (typeof CategoryScalarFieldEnum)[keyof typeof CategoryScalarFieldEnum]
@@ -7452,7 +7587,9 @@ export namespace Prisma {
     toAccountId: 'toAccountId',
     categoryId: 'categoryId',
     note: 'note',
-    createdAt: 'createdAt'
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
   };
 
   export type TransactionScalarFieldEnum = (typeof TransactionScalarFieldEnum)[keyof typeof TransactionScalarFieldEnum]
@@ -7461,7 +7598,10 @@ export namespace Prisma {
   export const TagScalarFieldEnum: {
     id: 'id',
     userId: 'userId',
-    name: 'name'
+    name: 'name',
+    createdAt: 'createdAt',
+    updatedAt: 'updatedAt',
+    deletedAt: 'deletedAt'
   };
 
   export type TagScalarFieldEnum = (typeof TagScalarFieldEnum)[keyof typeof TagScalarFieldEnum]
@@ -7686,6 +7826,8 @@ export namespace Prisma {
     note?: StringNullableFilter<"Account"> | string | null
     archived?: BoolFilter<"Account"> | boolean
     createdAt?: DateTimeFilter<"Account"> | Date | string
+    updatedAt?: DateTimeFilter<"Account"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Account"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     transactions?: TransactionListRelationFilter
     transfersIn?: TransactionListRelationFilter
@@ -7701,6 +7843,8 @@ export namespace Prisma {
     note?: SortOrderInput | SortOrder
     archived?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     transactions?: TransactionOrderByRelationAggregateInput
     transfersIn?: TransactionOrderByRelationAggregateInput
@@ -7719,6 +7863,8 @@ export namespace Prisma {
     note?: StringNullableFilter<"Account"> | string | null
     archived?: BoolFilter<"Account"> | boolean
     createdAt?: DateTimeFilter<"Account"> | Date | string
+    updatedAt?: DateTimeFilter<"Account"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Account"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     transactions?: TransactionListRelationFilter
     transfersIn?: TransactionListRelationFilter
@@ -7734,6 +7880,8 @@ export namespace Prisma {
     note?: SortOrderInput | SortOrder
     archived?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     _count?: AccountCountOrderByAggregateInput
     _avg?: AccountAvgOrderByAggregateInput
     _max?: AccountMaxOrderByAggregateInput
@@ -7754,6 +7902,8 @@ export namespace Prisma {
     note?: StringNullableWithAggregatesFilter<"Account"> | string | null
     archived?: BoolWithAggregatesFilter<"Account"> | boolean
     createdAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Account"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Account"> | Date | string | null
   }
 
   export type CategoryWhereInput = {
@@ -7768,6 +7918,9 @@ export namespace Prisma {
     color?: StringNullableFilter<"Category"> | string | null
     parentId?: StringNullableFilter<"Category"> | string | null
     archived?: BoolFilter<"Category"> | boolean
+    createdAt?: DateTimeFilter<"Category"> | Date | string
+    updatedAt?: DateTimeFilter<"Category"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Category"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     children?: CategoryListRelationFilter
@@ -7783,6 +7936,9 @@ export namespace Prisma {
     color?: SortOrderInput | SortOrder
     parentId?: SortOrderInput | SortOrder
     archived?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     parent?: CategoryOrderByWithRelationInput
     children?: CategoryOrderByRelationAggregateInput
@@ -7802,6 +7958,9 @@ export namespace Prisma {
     color?: StringNullableFilter<"Category"> | string | null
     parentId?: StringNullableFilter<"Category"> | string | null
     archived?: BoolFilter<"Category"> | boolean
+    createdAt?: DateTimeFilter<"Category"> | Date | string
+    updatedAt?: DateTimeFilter<"Category"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Category"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     parent?: XOR<CategoryNullableScalarRelationFilter, CategoryWhereInput> | null
     children?: CategoryListRelationFilter
@@ -7817,6 +7976,9 @@ export namespace Prisma {
     color?: SortOrderInput | SortOrder
     parentId?: SortOrderInput | SortOrder
     archived?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     _count?: CategoryCountOrderByAggregateInput
     _max?: CategoryMaxOrderByAggregateInput
     _min?: CategoryMinOrderByAggregateInput
@@ -7834,6 +7996,9 @@ export namespace Prisma {
     color?: StringNullableWithAggregatesFilter<"Category"> | string | null
     parentId?: StringNullableWithAggregatesFilter<"Category"> | string | null
     archived?: BoolWithAggregatesFilter<"Category"> | boolean
+    createdAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Category"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Category"> | Date | string | null
   }
 
   export type TransactionWhereInput = {
@@ -7850,6 +8015,8 @@ export namespace Prisma {
     categoryId?: StringNullableFilter<"Transaction"> | string | null
     note?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
     toAccount?: XOR<AccountNullableScalarRelationFilter, AccountWhereInput> | null
@@ -7868,6 +8035,8 @@ export namespace Prisma {
     categoryId?: SortOrderInput | SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     account?: AccountOrderByWithRelationInput
     toAccount?: AccountOrderByWithRelationInput
@@ -7889,6 +8058,8 @@ export namespace Prisma {
     categoryId?: StringNullableFilter<"Transaction"> | string | null
     note?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     account?: XOR<AccountScalarRelationFilter, AccountWhereInput>
     toAccount?: XOR<AccountNullableScalarRelationFilter, AccountWhereInput> | null
@@ -7907,6 +8078,8 @@ export namespace Prisma {
     categoryId?: SortOrderInput | SortOrder
     note?: SortOrderInput | SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     _count?: TransactionCountOrderByAggregateInput
     _avg?: TransactionAvgOrderByAggregateInput
     _max?: TransactionMaxOrderByAggregateInput
@@ -7928,6 +8101,8 @@ export namespace Prisma {
     categoryId?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     note?: StringNullableWithAggregatesFilter<"Transaction"> | string | null
     createdAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Transaction"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Transaction"> | Date | string | null
   }
 
   export type TagWhereInput = {
@@ -7937,6 +8112,9 @@ export namespace Prisma {
     id?: StringFilter<"Tag"> | string
     userId?: StringFilter<"Tag"> | string
     name?: StringFilter<"Tag"> | string
+    createdAt?: DateTimeFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeFilter<"Tag"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Tag"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     transactions?: TransactionListRelationFilter
   }
@@ -7945,6 +8123,9 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     user?: UserOrderByWithRelationInput
     transactions?: TransactionOrderByRelationAggregateInput
   }
@@ -7957,6 +8138,9 @@ export namespace Prisma {
     NOT?: TagWhereInput | TagWhereInput[]
     userId?: StringFilter<"Tag"> | string
     name?: StringFilter<"Tag"> | string
+    createdAt?: DateTimeFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeFilter<"Tag"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Tag"> | Date | string | null
     user?: XOR<UserScalarRelationFilter, UserWhereInput>
     transactions?: TransactionListRelationFilter
   }, "id" | "userId_name">
@@ -7965,6 +8149,9 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrderInput | SortOrder
     _count?: TagCountOrderByAggregateInput
     _max?: TagMaxOrderByAggregateInput
     _min?: TagMinOrderByAggregateInput
@@ -7977,6 +8164,9 @@ export namespace Prisma {
     id?: StringWithAggregatesFilter<"Tag"> | string
     userId?: StringWithAggregatesFilter<"Tag"> | string
     name?: StringWithAggregatesFilter<"Tag"> | string
+    createdAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeWithAggregatesFilter<"Tag"> | Date | string
+    deletedAt?: DateTimeNullableWithAggregatesFilter<"Tag"> | Date | string | null
   }
 
   export type UserCreateInput = {
@@ -8067,6 +8257,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutAccountsInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
     transfersIn?: TransactionCreateNestedManyWithoutToAccountInput
@@ -8082,6 +8274,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersIn?: TransactionUncheckedCreateNestedManyWithoutToAccountInput
   }
@@ -8095,6 +8289,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutAccountsNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
     transfersIn?: TransactionUpdateManyWithoutToAccountNestedInput
@@ -8110,6 +8306,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersIn?: TransactionUncheckedUpdateManyWithoutToAccountNestedInput
   }
@@ -8124,6 +8322,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type AccountUpdateManyMutationInput = {
@@ -8135,6 +8335,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type AccountUncheckedUpdateManyInput = {
@@ -8147,6 +8349,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CategoryCreateInput = {
@@ -8156,6 +8360,9 @@ export namespace Prisma {
     icon?: string | null
     color?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutCategoriesInput
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
@@ -8171,6 +8378,9 @@ export namespace Prisma {
     color?: string | null
     parentId?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCategoryInput
   }
@@ -8182,6 +8392,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutCategoriesNestedInput
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
@@ -8197,6 +8410,9 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCategoryNestedInput
   }
@@ -8210,6 +8426,9 @@ export namespace Prisma {
     color?: string | null
     parentId?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type CategoryUpdateManyMutationInput = {
@@ -8219,6 +8438,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CategoryUncheckedUpdateManyInput = {
@@ -8230,6 +8452,9 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionCreateInput = {
@@ -8239,6 +8464,8 @@ export namespace Prisma {
     date: Date | string
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutTransactionsInput
     account: AccountCreateNestedOneWithoutTransactionsInput
     toAccount?: AccountCreateNestedOneWithoutTransfersInInput
@@ -8257,6 +8484,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     tags?: TagUncheckedCreateNestedManyWithoutTransactionsInput
   }
 
@@ -8267,6 +8496,8 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
     account?: AccountUpdateOneRequiredWithoutTransactionsNestedInput
     toAccount?: AccountUpdateOneWithoutTransfersInNestedInput
@@ -8285,6 +8516,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tags?: TagUncheckedUpdateManyWithoutTransactionsNestedInput
   }
 
@@ -8299,6 +8532,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TransactionUpdateManyMutationInput = {
@@ -8308,6 +8543,8 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionUncheckedUpdateManyInput = {
@@ -8321,11 +8558,16 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TagCreateInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutTagsInput
     transactions?: TransactionCreateNestedManyWithoutTagsInput
   }
@@ -8334,12 +8576,18 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutTagsInput
   }
 
   export type TagUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutTagsNestedInput
     transactions?: TransactionUpdateManyWithoutTagsNestedInput
   }
@@ -8348,6 +8596,9 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutTagsNestedInput
   }
 
@@ -8355,17 +8606,26 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TagUpdateManyMutationInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TagUncheckedUpdateManyInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type StringFilter<$PrismaModel = never> = {
@@ -8554,6 +8814,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type UserScalarRelationFilter = {
     is?: UserWhereInput
     isNot?: UserWhereInput
@@ -8569,6 +8840,8 @@ export namespace Prisma {
     note?: SortOrder
     archived?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type AccountAvgOrderByAggregateInput = {
@@ -8585,6 +8858,8 @@ export namespace Prisma {
     note?: SortOrder
     archived?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type AccountMinOrderByAggregateInput = {
@@ -8597,6 +8872,8 @@ export namespace Prisma {
     note?: SortOrder
     archived?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type AccountSumOrderByAggregateInput = {
@@ -8637,6 +8914,20 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
   export type EnumCategoryKindFilter<$PrismaModel = never> = {
     equals?: $Enums.CategoryKind | EnumCategoryKindFieldRefInput<$PrismaModel>
     in?: $Enums.CategoryKind[] | ListEnumCategoryKindFieldRefInput<$PrismaModel>
@@ -8665,6 +8956,9 @@ export namespace Prisma {
     color?: SortOrder
     parentId?: SortOrder
     archived?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type CategoryMaxOrderByAggregateInput = {
@@ -8676,6 +8970,9 @@ export namespace Prisma {
     color?: SortOrder
     parentId?: SortOrder
     archived?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type CategoryMinOrderByAggregateInput = {
@@ -8687,6 +8984,9 @@ export namespace Prisma {
     color?: SortOrder
     parentId?: SortOrder
     archived?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type EnumCategoryKindWithAggregatesFilter<$PrismaModel = never> = {
@@ -8727,6 +9027,8 @@ export namespace Prisma {
     categoryId?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type TransactionAvgOrderByAggregateInput = {
@@ -8744,6 +9046,8 @@ export namespace Prisma {
     categoryId?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type TransactionMinOrderByAggregateInput = {
@@ -8757,6 +9061,8 @@ export namespace Prisma {
     categoryId?: SortOrder
     note?: SortOrder
     createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type TransactionSumOrderByAggregateInput = {
@@ -8782,18 +9088,27 @@ export namespace Prisma {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type TagMaxOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type TagMinOrderByAggregateInput = {
     id?: SortOrder
     userId?: SortOrder
     name?: SortOrder
+    createdAt?: SortOrder
+    updatedAt?: SortOrder
+    deletedAt?: SortOrder
   }
 
   export type AccountCreateNestedManyWithoutUserInput = {
@@ -9024,6 +9339,10 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
+  }
+
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
   }
 
   export type UserUpdateOneRequiredWithoutAccountsNestedInput = {
@@ -9494,6 +9813,17 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedEnumAccountTypeWithAggregatesFilter<$PrismaModel = never> = {
     equals?: $Enums.AccountType | EnumAccountTypeFieldRefInput<$PrismaModel>
     in?: $Enums.AccountType[] | ListEnumAccountTypeFieldRefInput<$PrismaModel>
@@ -9526,6 +9856,20 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    notIn?: Date[] | string[] | ListDateTimeFieldRefInput<$PrismaModel> | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedEnumCategoryKindFilter<$PrismaModel = never> = {
@@ -9571,6 +9915,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionCreateNestedManyWithoutAccountInput
     transfersIn?: TransactionCreateNestedManyWithoutToAccountInput
   }
@@ -9584,6 +9930,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
     transfersIn?: TransactionUncheckedCreateNestedManyWithoutToAccountInput
   }
@@ -9605,6 +9953,9 @@ export namespace Prisma {
     icon?: string | null
     color?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
     transactions?: TransactionCreateNestedManyWithoutCategoryInput
@@ -9618,6 +9969,9 @@ export namespace Prisma {
     color?: string | null
     parentId?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCategoryInput
   }
@@ -9639,6 +9993,8 @@ export namespace Prisma {
     date: Date | string
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     account: AccountCreateNestedOneWithoutTransactionsInput
     toAccount?: AccountCreateNestedOneWithoutTransfersInInput
     category?: CategoryCreateNestedOneWithoutTransactionsInput
@@ -9655,6 +10011,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     tags?: TagUncheckedCreateNestedManyWithoutTransactionsInput
   }
 
@@ -9671,12 +10029,18 @@ export namespace Prisma {
   export type TagCreateWithoutUserInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionCreateNestedManyWithoutTagsInput
   }
 
   export type TagUncheckedCreateWithoutUserInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutTagsInput
   }
 
@@ -9719,6 +10083,8 @@ export namespace Prisma {
     note?: StringNullableFilter<"Account"> | string | null
     archived?: BoolFilter<"Account"> | boolean
     createdAt?: DateTimeFilter<"Account"> | Date | string
+    updatedAt?: DateTimeFilter<"Account"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Account"> | Date | string | null
   }
 
   export type CategoryUpsertWithWhereUniqueWithoutUserInput = {
@@ -9749,6 +10115,9 @@ export namespace Prisma {
     color?: StringNullableFilter<"Category"> | string | null
     parentId?: StringNullableFilter<"Category"> | string | null
     archived?: BoolFilter<"Category"> | boolean
+    createdAt?: DateTimeFilter<"Category"> | Date | string
+    updatedAt?: DateTimeFilter<"Category"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Category"> | Date | string | null
   }
 
   export type TransactionUpsertWithWhereUniqueWithoutUserInput = {
@@ -9781,6 +10150,8 @@ export namespace Prisma {
     categoryId?: StringNullableFilter<"Transaction"> | string | null
     note?: StringNullableFilter<"Transaction"> | string | null
     createdAt?: DateTimeFilter<"Transaction"> | Date | string
+    updatedAt?: DateTimeFilter<"Transaction"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Transaction"> | Date | string | null
   }
 
   export type TagUpsertWithWhereUniqueWithoutUserInput = {
@@ -9806,6 +10177,9 @@ export namespace Prisma {
     id?: StringFilter<"Tag"> | string
     userId?: StringFilter<"Tag"> | string
     name?: StringFilter<"Tag"> | string
+    createdAt?: DateTimeFilter<"Tag"> | Date | string
+    updatedAt?: DateTimeFilter<"Tag"> | Date | string
+    deletedAt?: DateTimeNullableFilter<"Tag"> | Date | string | null
   }
 
   export type UserCreateWithoutAccountsInput = {
@@ -9844,6 +10218,8 @@ export namespace Prisma {
     date: Date | string
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutTransactionsInput
     toAccount?: AccountCreateNestedOneWithoutTransfersInInput
     category?: CategoryCreateNestedOneWithoutTransactionsInput
@@ -9860,6 +10236,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     tags?: TagUncheckedCreateNestedManyWithoutTransactionsInput
   }
 
@@ -9880,6 +10258,8 @@ export namespace Prisma {
     date: Date | string
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutTransactionsInput
     account: AccountCreateNestedOneWithoutTransactionsInput
     category?: CategoryCreateNestedOneWithoutTransactionsInput
@@ -9896,6 +10276,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     tags?: TagUncheckedCreateNestedManyWithoutTransactionsInput
   }
 
@@ -10012,6 +10394,9 @@ export namespace Prisma {
     icon?: string | null
     color?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutCategoriesInput
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     transactions?: TransactionCreateNestedManyWithoutCategoryInput
@@ -10026,6 +10411,9 @@ export namespace Prisma {
     color?: string | null
     parentId?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutCategoryInput
   }
 
@@ -10041,6 +10429,9 @@ export namespace Prisma {
     icon?: string | null
     color?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutCategoriesInput
     children?: CategoryCreateNestedManyWithoutParentInput
     transactions?: TransactionCreateNestedManyWithoutCategoryInput
@@ -10054,6 +10445,9 @@ export namespace Prisma {
     icon?: string | null
     color?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
     transactions?: TransactionUncheckedCreateNestedManyWithoutCategoryInput
   }
@@ -10075,6 +10469,8 @@ export namespace Prisma {
     date: Date | string
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutTransactionsInput
     account: AccountCreateNestedOneWithoutTransactionsInput
     toAccount?: AccountCreateNestedOneWithoutTransfersInInput
@@ -10091,6 +10487,8 @@ export namespace Prisma {
     toAccountId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     tags?: TagUncheckedCreateNestedManyWithoutTransactionsInput
   }
 
@@ -10157,6 +10555,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutCategoriesNestedInput
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     transactions?: TransactionUpdateManyWithoutCategoryNestedInput
@@ -10171,6 +10572,9 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutCategoryNestedInput
   }
 
@@ -10244,6 +10648,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutAccountsInput
     transfersIn?: TransactionCreateNestedManyWithoutToAccountInput
   }
@@ -10258,6 +10664,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transfersIn?: TransactionUncheckedCreateNestedManyWithoutToAccountInput
   }
 
@@ -10275,6 +10683,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutAccountsInput
     transactions?: TransactionCreateNestedManyWithoutAccountInput
   }
@@ -10289,6 +10699,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     transactions?: TransactionUncheckedCreateNestedManyWithoutAccountInput
   }
 
@@ -10304,6 +10716,9 @@ export namespace Prisma {
     icon?: string | null
     color?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutCategoriesInput
     parent?: CategoryCreateNestedOneWithoutChildrenInput
     children?: CategoryCreateNestedManyWithoutParentInput
@@ -10318,6 +10733,9 @@ export namespace Prisma {
     color?: string | null
     parentId?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     children?: CategoryUncheckedCreateNestedManyWithoutParentInput
   }
 
@@ -10329,6 +10747,9 @@ export namespace Prisma {
   export type TagCreateWithoutTransactionsInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutTagsInput
   }
 
@@ -10336,6 +10757,9 @@ export namespace Prisma {
     id?: string
     userId: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TagCreateOrConnectWithoutTransactionsInput = {
@@ -10398,6 +10822,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutAccountsNestedInput
     transfersIn?: TransactionUpdateManyWithoutToAccountNestedInput
   }
@@ -10412,6 +10838,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transfersIn?: TransactionUncheckedUpdateManyWithoutToAccountNestedInput
   }
 
@@ -10435,6 +10863,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutAccountsNestedInput
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
   }
@@ -10449,6 +10879,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
   }
 
@@ -10470,6 +10902,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutCategoriesNestedInput
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
@@ -10484,6 +10919,9 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
   }
 
@@ -10539,6 +10977,8 @@ export namespace Prisma {
     date: Date | string
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
     user: UserCreateNestedOneWithoutTransactionsInput
     account: AccountCreateNestedOneWithoutTransactionsInput
     toAccount?: AccountCreateNestedOneWithoutTransfersInInput
@@ -10556,6 +10996,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TransactionCreateOrConnectWithoutTagsInput = {
@@ -10623,6 +11065,8 @@ export namespace Prisma {
     note?: string | null
     archived?: boolean
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type CategoryCreateManyUserInput = {
@@ -10633,6 +11077,9 @@ export namespace Prisma {
     color?: string | null
     parentId?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TransactionCreateManyUserInput = {
@@ -10645,11 +11092,16 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TagCreateManyUserInput = {
     id?: string
     name: string
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type AccountUpdateWithoutUserInput = {
@@ -10661,6 +11113,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUpdateManyWithoutAccountNestedInput
     transfersIn?: TransactionUpdateManyWithoutToAccountNestedInput
   }
@@ -10674,6 +11128,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutAccountNestedInput
     transfersIn?: TransactionUncheckedUpdateManyWithoutToAccountNestedInput
   }
@@ -10687,6 +11143,8 @@ export namespace Prisma {
     note?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CategoryUpdateWithoutUserInput = {
@@ -10696,6 +11154,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parent?: CategoryUpdateOneWithoutChildrenNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     transactions?: TransactionUpdateManyWithoutCategoryNestedInput
@@ -10709,6 +11170,9 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCategoryNestedInput
   }
@@ -10721,6 +11185,9 @@ export namespace Prisma {
     color?: NullableStringFieldUpdateOperationsInput | string | null
     parentId?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionUpdateWithoutUserInput = {
@@ -10730,6 +11197,8 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     account?: AccountUpdateOneRequiredWithoutTransactionsNestedInput
     toAccount?: AccountUpdateOneWithoutTransfersInNestedInput
     category?: CategoryUpdateOneWithoutTransactionsNestedInput
@@ -10746,6 +11215,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tags?: TagUncheckedUpdateManyWithoutTransactionsNestedInput
   }
 
@@ -10759,23 +11230,34 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TagUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUpdateManyWithoutTagsNestedInput
   }
 
   export type TagUncheckedUpdateWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     transactions?: TransactionUncheckedUpdateManyWithoutTagsNestedInput
   }
 
   export type TagUncheckedUpdateManyWithoutUserInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionCreateManyAccountInput = {
@@ -10788,6 +11270,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TransactionCreateManyToAccountInput = {
@@ -10800,6 +11284,8 @@ export namespace Prisma {
     categoryId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TransactionUpdateWithoutAccountInput = {
@@ -10809,6 +11295,8 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
     toAccount?: AccountUpdateOneWithoutTransfersInNestedInput
     category?: CategoryUpdateOneWithoutTransactionsNestedInput
@@ -10825,6 +11313,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tags?: TagUncheckedUpdateManyWithoutTransactionsNestedInput
   }
 
@@ -10838,6 +11328,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionUpdateWithoutToAccountInput = {
@@ -10847,6 +11339,8 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
     account?: AccountUpdateOneRequiredWithoutTransactionsNestedInput
     category?: CategoryUpdateOneWithoutTransactionsNestedInput
@@ -10863,6 +11357,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tags?: TagUncheckedUpdateManyWithoutTransactionsNestedInput
   }
 
@@ -10876,6 +11372,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type CategoryCreateManyParentInput = {
@@ -10886,6 +11384,9 @@ export namespace Prisma {
     icon?: string | null
     color?: string | null
     archived?: boolean
+    createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type TransactionCreateManyCategoryInput = {
@@ -10898,6 +11399,8 @@ export namespace Prisma {
     toAccountId?: string | null
     note?: string | null
     createdAt?: Date | string
+    updatedAt?: Date | string
+    deletedAt?: Date | string | null
   }
 
   export type CategoryUpdateWithoutParentInput = {
@@ -10907,6 +11410,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutCategoriesNestedInput
     children?: CategoryUpdateManyWithoutParentNestedInput
     transactions?: TransactionUpdateManyWithoutCategoryNestedInput
@@ -10920,6 +11426,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     children?: CategoryUncheckedUpdateManyWithoutParentNestedInput
     transactions?: TransactionUncheckedUpdateManyWithoutCategoryNestedInput
   }
@@ -10932,6 +11441,9 @@ export namespace Prisma {
     icon?: NullableStringFieldUpdateOperationsInput | string | null
     color?: NullableStringFieldUpdateOperationsInput | string | null
     archived?: BoolFieldUpdateOperationsInput | boolean
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionUpdateWithoutCategoryInput = {
@@ -10941,6 +11453,8 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
     account?: AccountUpdateOneRequiredWithoutTransactionsNestedInput
     toAccount?: AccountUpdateOneWithoutTransfersInNestedInput
@@ -10957,6 +11471,8 @@ export namespace Prisma {
     toAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     tags?: TagUncheckedUpdateManyWithoutTransactionsNestedInput
   }
 
@@ -10970,11 +11486,16 @@ export namespace Prisma {
     toAccountId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TagUpdateWithoutTransactionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutTagsNestedInput
   }
 
@@ -10982,12 +11503,18 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TagUncheckedUpdateManyWithoutTransactionsInput = {
     id?: StringFieldUpdateOperationsInput | string
     userId?: StringFieldUpdateOperationsInput | string
     name?: StringFieldUpdateOperationsInput | string
+    createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionUpdateWithoutTagsInput = {
@@ -10997,6 +11524,8 @@ export namespace Prisma {
     date?: DateTimeFieldUpdateOperationsInput | Date | string
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     user?: UserUpdateOneRequiredWithoutTransactionsNestedInput
     account?: AccountUpdateOneRequiredWithoutTransactionsNestedInput
     toAccount?: AccountUpdateOneWithoutTransfersInNestedInput
@@ -11014,6 +11543,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type TransactionUncheckedUpdateManyWithoutTagsInput = {
@@ -11027,6 +11558,8 @@ export namespace Prisma {
     categoryId?: NullableStringFieldUpdateOperationsInput | string | null
     note?: NullableStringFieldUpdateOperationsInput | string | null
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    updatedAt?: DateTimeFieldUpdateOperationsInput | Date | string
+    deletedAt?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
 

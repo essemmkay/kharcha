@@ -20,18 +20,25 @@ export async function createCategory(
   const parsed = categorySchema.safeParse(input);
   if (!parsed.success) return { ok: false, error: zodMessage(parsed.error) };
 
+  const fields = {
+    name: parsed.data.name,
+    kind: parsed.data.kind,
+    parentId: parsed.data.parentId,
+    icon: parsed.data.icon,
+    color: parsed.data.color,
+  };
   try {
-    const c = await prisma.category.create({
-      data: {
-        userId: user.id,
-        name: parsed.data.name,
-        kind: parsed.data.kind,
-        parentId: parsed.data.parentId,
-        icon: parsed.data.icon,
-        color: parsed.data.color,
-      },
-      select: { id: true },
-    });
+    const c = parsed.data.id
+      ? await prisma.category.upsert({
+          where: { id: parsed.data.id },
+          create: { id: parsed.data.id, userId: user.id, ...fields },
+          update: { ...fields, deletedAt: null },
+          select: { id: true },
+        })
+      : await prisma.category.create({
+          data: { userId: user.id, ...fields },
+          select: { id: true },
+        });
     revalidate();
     return { ok: true, data: c };
   } catch {
@@ -62,8 +69,9 @@ export async function updateCategory(
   return { ok: true, data: { id } };
 }
 
-// Deletes a category. Transactions keep their row but lose the category link
-// (onDelete: SetNull), unless reassignToId is given.
+// Soft-deletes a category (tombstone for delta sync). Transactions keep their
+// row but lose the category link (null), unless reassignToId is given. Either
+// way the touched transactions get a fresh updatedAt so the change propagates.
 export async function deleteCategory(
   id: string,
   reassignToId?: string,
@@ -76,13 +84,14 @@ export async function deleteCategory(
   });
   if (!owned) return { ok: false, error: "Category not found" };
 
-  if (reassignToId) {
-    await prisma.transaction.updateMany({
-      where: { userId: user.id, categoryId: id },
-      data: { categoryId: reassignToId },
-    });
-  }
-  await prisma.category.delete({ where: { id } });
+  await prisma.transaction.updateMany({
+    where: { userId: user.id, categoryId: id },
+    data: { categoryId: reassignToId ?? null },
+  });
+  await prisma.category.updateMany({
+    where: { id, userId: user.id },
+    data: { deletedAt: new Date() },
+  });
   revalidate();
   return { ok: true, data: { id } };
 }

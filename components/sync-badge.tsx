@@ -1,9 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
 import { CloudOff, RefreshCw, Trash2 } from "lucide-react";
-import { useOutbox } from "@/lib/sync/use-outbox";
+import { useSync } from "@/lib/sync/use-sync";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,33 +13,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { cn } from "@/lib/utils";
 
+// Mounted once in the (app) header. useSync drives background sync (mount /
+// online / tab-visible) and exposes the queue; the badge appears only while
+// changes are pending.
 export function SyncBadge() {
-  const { pending, count, syncing, flush, discard } = useOutbox();
-  const router = useRouter();
-
-  // Try to sync on load, when coming back online, and when the tab regains focus.
-  useEffect(() => {
-    void flush();
-    const onOnline = () => void flush();
-    const onVisible = () => {
-      if (document.visibilityState === "visible") void flush();
-    };
-    window.addEventListener("online", onOnline);
-    document.addEventListener("visibilitychange", onVisible);
-    return () => {
-      window.removeEventListener("online", onOnline);
-      document.removeEventListener("visibilitychange", onVisible);
-    };
-  }, [flush]);
-
-  // When the queue drains, pull the now-synced rows from the server.
-  useEffect(() => {
-    if (count === 0) router.refresh();
-  }, [count, router]);
+  const { count, errored, syncing, sync, discard } = useSync();
 
   if (count === 0) return null;
-
-  const errored = pending.filter((e) => e.error);
 
   return (
     <DropdownMenu>
@@ -49,18 +27,18 @@ export function SyncBadge() {
         <Button variant="ghost" size="sm" className="gap-1.5 text-muted-foreground">
           <CloudOff className={cn("size-4", errored.length && "text-destructive")} />
           <span className="tabular">{count}</span>
-          <span className="sr-only">unsynced transactions</span>
+          <span className="sr-only">unsynced changes</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-64">
         <DropdownMenuLabel>
-          {count} unsynced {count === 1 ? "transaction" : "transactions"}
+          {count} unsynced {count === 1 ? "change" : "changes"}
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem
           onSelect={(e) => {
             e.preventDefault();
-            void flush();
+            void sync();
           }}
           disabled={syncing}
         >
@@ -75,10 +53,10 @@ export function SyncBadge() {
             </DropdownMenuLabel>
             {errored.map((e) => (
               <DropdownMenuItem
-                key={e.id}
+                key={e.seq}
                 onSelect={(ev) => {
                   ev.preventDefault();
-                  discard(e.id);
+                  void discard(e.seq!);
                 }}
                 className="flex-col items-start gap-0.5"
               >

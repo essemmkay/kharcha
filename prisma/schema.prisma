@@ -48,10 +48,13 @@ model Account {
   note           String?
   archived       Boolean       @default(false)
   createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @default(now()) @updatedAt
+  deletedAt      DateTime?
   transactions   Transaction[] @relation("AccountTransactions")
   transfersIn    Transaction[] @relation("TransferToAccount")
 
   @@index([userId])
+  @@index([userId, updatedAt])
 }
 
 model Category {
@@ -66,10 +69,14 @@ model Category {
   parent       Category?     @relation("Subcategories", fields: [parentId], references: [id], onDelete: SetNull)
   children     Category[]    @relation("Subcategories")
   archived     Boolean       @default(false)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  deletedAt    DateTime?
   transactions Transaction[]
 
   @@unique([userId, kind, name, parentId])
   @@index([userId])
+  @@index([userId, updatedAt])
 }
 
 model Transaction {
@@ -88,8 +95,11 @@ model Transaction {
   note        String?
   tags        Tag[]           @relation("TransactionTags")
   createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @default(now()) @updatedAt
+  deletedAt   DateTime?
 
   @@index([userId, date])
+  @@index([userId, updatedAt])
   @@index([accountId])
   @@index([toAccountId])
   @@index([categoryId])
@@ -100,8 +110,12 @@ model Tag {
   userId       String
   user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @default(now()) @updatedAt
+  deletedAt    DateTime?
   transactions Transaction[] @relation("TransactionTags")
 
   @@unique([userId, name])
   @@index([userId])
+  @@index([userId, updatedAt])
 }

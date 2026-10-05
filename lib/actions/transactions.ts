@@ -54,20 +54,29 @@ export async function createTransaction(
   const ownErr = await assertOwnership(user.id, d);
   if (ownErr) return { ok: false, error: ownErr };
 
-  const tx = await prisma.transaction.create({
-    data: {
-      userId: user.id,
-      type: d.type,
-      amount: d.amount,
-      date: d.date,
-      accountId: d.accountId,
-      toAccountId: d.type === "TRANSFER" ? d.toAccountId : null,
-      categoryId: d.type === "TRANSFER" ? null : d.categoryId,
-      note: d.note,
-      tags: { connectOrCreate: tagConnect(user.id, d.tags ?? []) },
-    },
-    select: { id: true },
-  });
+  const fields = {
+    type: d.type,
+    amount: d.amount,
+    date: d.date,
+    accountId: d.accountId,
+    toAccountId: d.type === "TRANSFER" ? d.toAccountId : null,
+    categoryId: d.type === "TRANSFER" ? null : d.categoryId,
+    note: d.note,
+  };
+  const tags = { connectOrCreate: tagConnect(user.id, d.tags ?? []) };
+
+  // With a client-authoritative id, upsert makes a replayed create idempotent.
+  const tx = d.id
+    ? await prisma.transaction.upsert({
+        where: { id: d.id },
+        create: { id: d.id, userId: user.id, ...fields, tags },
+        update: { ...fields, deletedAt: null, tags: { set: [], ...tags } },
+        select: { id: true },
+      })
+    : await prisma.transaction.create({
+        data: { userId: user.id, ...fields, tags },
+        select: { id: true },
+      });
   revalidate();
   return { ok: true, data: tx };
 }
@@ -111,8 +120,11 @@ export async function deleteTransaction(
   id: string,
 ): Promise<ActionResult<{ id: string }>> {
   const user = await requireUser();
-  const result = await prisma.transaction.deleteMany({
+  // Soft delete: set a tombstone so the delta pull propagates the removal.
+  // No deletedAt filter, so a replayed delete stays idempotently successful.
+  const result = await prisma.transaction.updateMany({
     where: { id, userId: user.id },
+    data: { deletedAt: new Date() },
   });
   if (result.count === 0) return { ok: false, error: "Transaction not found" };
   revalidate();

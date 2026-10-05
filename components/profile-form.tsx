@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
 import { updateProfile } from "@/lib/actions/settings";
+import { setMeta } from "@/lib/db/local";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -21,9 +22,16 @@ export function ProfileForm({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
+      // Profile isn't part of the offline sync queue; this edit needs a
+      // connection. On success, mirror it into local meta so the UI (currency,
+      // name) updates immediately. ponytail: online-only; queue it if needed.
       const res = await updateProfile({ name: n, baseCurrency: cur });
-      if (!res.ok) toast.error(res.error);
-      else toast.success("Profile saved");
+      if (!res.ok) {
+        toast.error(res.error);
+        return;
+      }
+      await setMeta({ name: n || null, baseCurrency: cur });
+      toast.success("Profile saved");
     });
   }
 

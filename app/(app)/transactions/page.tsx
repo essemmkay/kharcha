@@ -1,47 +1,45 @@
-import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { listTransactions } from "@/lib/queries";
-import { monthRange, first } from "@/lib/dates";
-import { toTxRow } from "@/lib/tx-row";
+"use client";
+
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
+import { useLocalData } from "@/lib/db/use-local-data";
+import { accountsWithBalances, listLocalTransactions } from "@/lib/local-queries";
+import { monthRange } from "@/lib/dates";
 import { FilterBar } from "@/components/filter-bar";
 import { TypeFilter } from "@/components/type-filter";
 import { TransactionList } from "@/components/transaction-list";
-import type { SearchParams } from "@/lib/types";
+import { PageLoading } from "@/components/page-loading";
 
-export default async function TransactionsPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const sp = await searchParams;
-  const user = await requireUser();
+export default function TransactionsPage() {
+  const sp = useSearchParams();
+  const { ready, accounts, categories, transactions } = useLocalData();
 
-  const { from, to } = monthRange(first(sp.month));
-  const accountId = first(sp.account);
-  const type = first(sp.type) as "INCOME" | "EXPENSE" | "TRANSFER" | undefined;
+  const { from, to } = monthRange(sp.get("month") ?? undefined);
+  const accountId = sp.get("account") || undefined;
+  const type = (sp.get("type") as "INCOME" | "EXPENSE" | "TRANSFER" | null) || undefined;
 
-  const [accounts, txs] = await Promise.all([
-    prisma.account.findMany({
-      where: { userId: user.id, archived: false },
-      orderBy: { createdAt: "asc" },
-      select: { id: true, name: true },
-    }),
-    listTransactions(user.id, {
+  const view = useMemo(() => {
+    const accountOptions = accountsWithBalances(accounts, transactions)
+      .filter((a) => !a.archived)
+      .map((a) => ({ id: a.id, name: a.name }));
+    const rows = listLocalTransactions(transactions, accounts, categories, {
       from,
       to,
-      accountId: accountId || undefined,
-      type: type || undefined,
-    }),
-  ]);
+      accountId,
+      type,
+    });
+    return { accountOptions, rows };
+  }, [accounts, categories, transactions, from, to, accountId, type]);
+
+  if (!ready) return <PageLoading />;
 
   return (
     <div className="space-y-4">
       <h1 className="text-xl font-semibold tracking-tight">Transactions</h1>
-      <FilterBar accounts={accounts} />
+      <FilterBar accounts={view.accountOptions} />
       <TypeFilter />
       <TransactionList
-        rows={txs.map(toTxRow)}
-        pendingFilter={{ type: type || undefined, accountId: accountId || undefined }}
+        rows={view.rows}
         emptyTitle="No transactions this month"
         emptyDescription="Try another month, or tap + to add one."
       />

@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { createAccount, updateAccount } from "@/lib/actions/accounts";
+import { saveAccount } from "@/lib/sync/local-writes";
 import { accountTypes } from "@/lib/schemas";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -50,10 +50,14 @@ export function AccountForm({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
-      const input = { name, type, currency, openingBalance, note };
-      const res = account?.id
-        ? await updateAccount(account.id, input)
-        : await createAccount(input);
+      const res = await saveAccount({
+        id: account?.id,
+        name,
+        type,
+        currency,
+        openingBalance,
+        note,
+      });
       if (!res.ok) {
         toast.error(res.error);
         return;

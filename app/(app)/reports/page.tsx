@@ -1,44 +1,49 @@
+"use client";
+
+import { useMemo } from "react";
+import { useSearchParams } from "next/navigation";
 import { format } from "date-fns";
 import { FileText } from "lucide-react";
-import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { getReport } from "@/lib/queries";
-import { monthRange, first } from "@/lib/dates";
+import { useLocalData } from "@/lib/db/use-local-data";
+import { report as buildReport } from "@/lib/local-queries";
+import { monthRange } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { ReportControls } from "@/components/report-controls";
 import { PdfExportButton } from "@/components/pdf-export-button";
 import { EmptyState } from "@/components/empty-state";
+import { PageLoading } from "@/components/page-loading";
 import { Card, CardContent } from "@/components/ui/card";
-import type { SearchParams } from "@/lib/types";
 
-export default async function ReportsPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const sp = await searchParams;
-  const user = await requireUser();
-  const cur = user.baseCurrency;
+export default function ReportsPage() {
+  const sp = useSearchParams();
+  const { ready, accounts, categories, transactions, baseCurrency: cur, email, name } =
+    useLocalData();
 
   const { from: defFrom, to: defTo } = monthRange();
-  const fromStr = first(sp.from) || format(defFrom, "yyyy-MM-dd");
-  const toStr = first(sp.to) || format(defTo, "yyyy-MM-dd");
-  const from = new Date(`${fromStr}T00:00:00`);
-  const to = new Date(`${toStr}T23:59:59`);
-  const accountId = first(sp.account) || undefined;
-  const type = first(sp.type) as "INCOME" | "EXPENSE" | undefined;
+  const fromStr = sp.get("from") || format(defFrom, "yyyy-MM-dd");
+  const toStr = sp.get("to") || format(defTo, "yyyy-MM-dd");
+  const accountId = sp.get("account") || undefined;
+  const type = (sp.get("type") as "INCOME" | "EXPENSE" | null) || undefined;
 
-  const [accounts, report] = await Promise.all([
-    prisma.account.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "asc" },
-      select: { id: true, name: true },
-    }),
-    getReport(user.id, from, to, { accountId, type }),
-  ]);
+  const { report, accountOptions } = useMemo(() => {
+    const from = new Date(`${fromStr}T00:00:00`);
+    const to = new Date(`${toStr}T23:59:59`);
+    return {
+      report: buildReport(transactions, accounts, categories, from, to, {
+        accountId,
+        type,
+      }),
+      accountOptions: accounts
+        .filter((a) => !a.deletedAt)
+        .sort((a, b) => a.createdAt.localeCompare(b.createdAt))
+        .map((a) => ({ id: a.id, name: a.name })),
+    };
+  }, [transactions, accounts, categories, fromStr, toStr, accountId, type]);
+
+  if (!ready) return <PageLoading />;
 
   const meta = {
-    userName: user.name ?? user.email,
+    userName: name ?? email ?? "",
     from: fromStr,
     to: toStr,
     currency: cur,
@@ -48,7 +53,7 @@ export default async function ReportsPage({
     <div className="space-y-4">
       <h1 className="text-xl font-semibold tracking-tight">Reports</h1>
 
-      <ReportControls from={fromStr} to={toStr} accounts={accounts} />
+      <ReportControls from={fromStr} to={toStr} accounts={accountOptions} />
 
       <div className="grid grid-cols-3 gap-3">
         <Stat label="Income" value={formatMoney(report.totals.income, cur)} tint="text-income" />

@@ -64,7 +64,11 @@ Top-level purpose: `app/` routes and server actions, `components/` reusable UI, 
 
 ## 5. Data-fetching conventions
 
-Server Actions are the single write path, and RSC is the read path. Justification: server actions are co-located, type-safe, and need no manual route wiring, which is the lazy and correct default for a single-user app. Route handlers are used only where an action cannot serve (the cron backup endpoint). Client-side fetching (SWR/React Query) is avoided unless a screen has interactive client state that cannot be driven by URL search params; prefer `?month=` and `?account=` search params read by RSC.
+**The app is offline-first/local-first (see section 12).** Reads render from a local IndexedDB mirror on the client, not from RSC. Writes apply to the local store immediately and queue for background sync to the server. Server Actions remain the server-side write authority (now idempotent via client-authoritative ids) and the delta-pull endpoint; they are no longer called directly from the hot read path.
+
+- **Read path**: client pages call pure aggregation fns in `lib/local-queries.ts` over the Dexie store (`lib/db/local.ts`) via `useLiveQuery`. `?month=`/`?account=`/`?type=`/`?from=`/`?to=` are read client-side with `useSearchParams`.
+- **Write path**: forms call `lib/sync/local-writes.ts` (validate with the same zod schema → write Dexie → enqueue). The engine (`lib/sync/engine.ts`) pushes the queue through the server actions and pulls deltas via `pullChanges` (`lib/actions/sync.ts`).
+- The `(app)` server layout still runs `requireUser()` for auth gating + first-login seeding; route handlers are used only where an action cannot serve (the cron backup endpoint).
 
 ## 6. Environment variables (names only)
 
@@ -120,4 +124,16 @@ The docs were written before scaffolding. The build pinned to current releases a
 - Forms are controlled components with server-side zod as the single validation authority (see section 4), not react-hook-form + zodResolver.
 - Transaction row interaction is tap-to-edit (delete lives on the edit page). Swipe-to-delete from DESIGN.md is deferred.
 - Backup is implemented as a GitHub Actions `pg_dump` cron (`.github/workflows/backup.yml`); the optional `/api/backup` route handler was not needed.
-- Optimistic create sync: new transactions are written to a client-side outbox (`lib/sync/outbox.ts`, localStorage) so they appear instantly and tolerate a flaky/offline connection. The outbox replays each one through the existing `createTransaction` server action (server stays the source of truth, per section 5), auto-flushing on load, on `online`, and on tab focus. `SyncBadge` in the app header shows the unsynced count plus a manual "Sync now" and lets you discard a server-rejected entry. Scope is creates only: edits and deletes still go straight to the server, and server-computed aggregates (dashboard totals, charts, balances) reflect a transaction only after it syncs. Upgrade path if needed: queue edits/deletes too, and move the queue to IndexedDB with the Background Sync API.
+- ~~Optimistic create sync via a localStorage outbox (creates only).~~ **Superseded** by the full offline-first rewrite (section 12). The old `lib/sync/outbox.ts` is removed.
+
+## 12. Offline-first architecture (incremental delta sync)
+
+The app was slow because every page was an RSC querying Supabase on each navigation (free-tier cold starts). It is now local-first: the browser owns the full dataset and reads/writes locally; the server reconciles in the background.
+
+- **Local store**: Dexie/IndexedDB (`lib/db/local.ts`) mirrors accounts, categories, transactions (money as `number`, dates as ISO strings; tags carried as names — there is no tag UI). A `meta` row holds the sync cursor + identity (baseCurrency/name/email) for offline display. A `queue` table is the ordered mutation log.
+- **Reads**: `lib/local-queries.ts` (pure, tested in `local-queries.test.ts`) ports the old `queries.ts` aggregations; client pages consume them via `useLiveQuery`.
+- **Writes**: `lib/sync/local-writes.ts` validates (same zod schemas), writes Dexie optimistically, and enqueues. Creates mint a **client-authoritative id** so a replayed create is idempotent server-side (`upsert`).
+- **Sync engine** (`lib/sync/engine.ts`): `push()` replays the queue through the existing server actions; `pull()` calls `pullChanges(since)` (`lib/actions/sync.ts`) for every row with `updatedAt > since` (tombstones included) and merges (upsert live / delete tombstoned), advancing `lastSync`. Triggers: mount, `online`, tab-visible, and after each local write. `SyncBadge` shows pending count / Sync now / discard-rejected.
+- **Schema**: every synced model gained `updatedAt @updatedAt` + `deletedAt` (soft-delete tombstone) + `@@index([userId, updatedAt])`. Deletes are soft and cascade in application code (`// ponytail:` noted), since DB `onDelete` cascades don't emit tombstones. Migration: `prisma/migrations/20261005_offline_sync_columns`.
+- **Offline shell**: `public/sw.js` (bumped to `kharcha-v2`) serves HTML navigations and Next RSC fetches stale-while-revalidate, keyed by pathname.
+- **Conflict policy**: last-write-wins by `updatedAt` (correct under the single-user assumption, per PRD). **Ceilings**: profile edits are online-only (not queued); tombstones are not yet GC'd; first-ever visit to a route while offline won't have a cached shell.

@@ -1,12 +1,17 @@
+"use client";
+
 import Link from "next/link";
 import { ChevronRight, Tag, Wallet } from "lucide-react";
-import { requireUser } from "@/lib/auth";
+import { useLocalData } from "@/lib/db/use-local-data";
 import { ProfileForm } from "@/components/profile-form";
 import { ExportDataButton, LogoutButton } from "@/components/settings-actions";
+import { PageLoading } from "@/components/page-loading";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export default async function SettingsPage() {
-  const user = await requireUser();
+export default function SettingsPage() {
+  const { ready, name, baseCurrency, email } = useLocalData();
+
+  if (!ready) return <PageLoading />;
 
   return (
     <div className="space-y-4">
@@ -17,7 +22,7 @@ export default async function SettingsPage() {
           <CardTitle className="text-base">Profile</CardTitle>
         </CardHeader>
         <CardContent>
-          <ProfileForm name={user.name ?? ""} baseCurrency={user.baseCurrency} />
+          <ProfileForm name={name ?? ""} baseCurrency={baseCurrency} />
         </CardContent>
       </Card>
 
@@ -45,7 +50,7 @@ export default async function SettingsPage() {
       </Card>
 
       <p className="pb-2 text-center text-xs text-muted-foreground">
-        Signed in as {user.email}
+        Signed in as {email}
       </p>
     </div>
   );

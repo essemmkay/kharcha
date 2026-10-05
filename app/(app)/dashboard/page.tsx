@@ -1,18 +1,20 @@
+"use client";
+
+import { useMemo } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import { ChartPie, TrendingUp } from "lucide-react";
-import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { useLocalData } from "@/lib/db/use-local-data";
 import {
-  getIncomeExpenseSeries,
-  getMonthlySummary,
-  getNetWorth,
-  getNetWorthSeries,
-  getRecentTransactions,
-} from "@/lib/queries";
-import { monthRange, first } from "@/lib/dates";
-import type { SearchParams } from "@/lib/types";
+  accountsWithBalances,
+  incomeExpenseSeries,
+  listLocalTransactions,
+  monthlySummary,
+  netWorth,
+  netWorthSeries,
+} from "@/lib/local-queries";
+import { monthRange } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
-import { toTxRow } from "@/lib/tx-row";
 import { FilterBar } from "@/components/filter-bar";
 import { TransactionList } from "@/components/transaction-list";
 import { EmptyState } from "@/components/empty-state";
@@ -20,44 +22,50 @@ import { ExpenseDonut } from "@/components/charts/expense-donut";
 import { IncomeExpenseBar } from "@/components/charts/income-expense-bar";
 import { NetWorthLine } from "@/components/charts/networth-line";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { PageLoading } from "@/components/page-loading";
 
-export default async function DashboardPage({
-  searchParams,
-}: {
-  searchParams: SearchParams;
-}) {
-  const sp = await searchParams;
-  const user = await requireUser();
-  const { month } = monthRange(first(sp.month));
-  const accountId = first(sp.account) || undefined;
-  const cur = user.baseCurrency;
+export default function DashboardPage() {
+  const sp = useSearchParams();
+  const { ready, accounts, categories, transactions, baseCurrency: cur } =
+    useLocalData();
+  const { month } = monthRange(sp.get("month") ?? undefined);
+  const accountId = sp.get("account") || undefined;
 
-  const [accounts, netWorth, summary, ieSeries, nwSeries, recent] =
-    await Promise.all([
-      prisma.account.findMany({
-        where: { userId: user.id, archived: false },
-        orderBy: { createdAt: "asc" },
-        select: { id: true, name: true },
-      }),
-      getNetWorth(user.id),
-      getMonthlySummary(user.id, month, accountId),
-      getIncomeExpenseSeries(user.id, 6, accountId),
-      getNetWorthSeries(user.id, 12),
-      getRecentTransactions(user.id, 6, accountId),
-    ]);
+  const view = useMemo(() => {
+    const accountOptions = accountsWithBalances(accounts, transactions)
+      .filter((a) => !a.archived)
+      .map((a) => ({ id: a.id, name: a.name }));
+    return {
+      accountOptions,
+      netWorth: netWorth(accounts, transactions),
+      summary: monthlySummary(transactions, categories, month, accountId),
+      ieSeries: incomeExpenseSeries(transactions, 6, accountId),
+      nwSeries: netWorthSeries(accounts, transactions, 12),
+      recent: listLocalTransactions(
+        transactions,
+        accounts,
+        categories,
+        accountId ? { accountId } : {},
+        6,
+      ),
+    };
+  }, [accounts, categories, transactions, month, accountId]);
 
+  if (!ready) return <PageLoading />;
+
+  const { summary } = view;
   const topCategories = summary.byCategory.slice(0, 5);
 
   return (
     <div className="space-y-4">
-      <FilterBar accounts={accounts} />
+      <FilterBar accounts={view.accountOptions} />
 
       {/* Net worth */}
       <Card>
         <CardContent className="pt-6">
           <p className="text-sm text-muted-foreground">Net worth</p>
           <p className="text-3xl font-semibold tabular">
-            {formatMoney(netWorth, cur)}
+            {formatMoney(view.netWorth, cur)}
           </p>
         </CardContent>
       </Card>
@@ -118,7 +126,7 @@ export default async function DashboardPage({
           <CardTitle className="text-base">Income vs expense</CardTitle>
         </CardHeader>
         <CardContent>
-          <IncomeExpenseBar data={ieSeries} currency={cur} />
+          <IncomeExpenseBar data={view.ieSeries} currency={cur} />
         </CardContent>
       </Card>
 
@@ -128,14 +136,14 @@ export default async function DashboardPage({
           <CardTitle className="text-base">Net worth trend</CardTitle>
         </CardHeader>
         <CardContent>
-          {nwSeries.length === 0 ? (
+          {view.nwSeries.length === 0 ? (
             <EmptyState
               icon={TrendingUp}
               title="No data yet"
               description="Create accounts and add transactions to see the trend."
             />
           ) : (
-            <NetWorthLine data={nwSeries} currency={cur} />
+            <NetWorthLine data={view.nwSeries} currency={cur} />
           )}
         </CardContent>
       </Card>
@@ -150,8 +158,7 @@ export default async function DashboardPage({
         </CardHeader>
         <CardContent>
           <TransactionList
-            rows={recent.map(toTxRow)}
-            pendingFilter={{ accountId }}
+            rows={view.recent}
             emptyTitle="No transactions yet"
             emptyDescription="Tap + to add your first one."
           />

@@ -1,34 +1,52 @@
+"use client";
+
+import { use, useMemo } from "react";
 import Link from "next/link";
-import { notFound } from "next/navigation";
 import { ChevronLeft } from "lucide-react";
-import { requireUser } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
-import { getAccountsWithBalances, listTransactions } from "@/lib/queries";
-import { formatMoney, toNumber } from "@/lib/money";
-import { toTxRow } from "@/lib/tx-row";
+import { useLocalData } from "@/lib/db/use-local-data";
+import { accountsWithBalances, listLocalTransactions } from "@/lib/local-queries";
+import { formatMoney } from "@/lib/money";
 import { TransactionList } from "@/components/transaction-list";
 import { AccountSheet } from "@/components/account-sheet";
+import { EmptyState } from "@/components/empty-state";
+import { PageLoading } from "@/components/page-loading";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { Wallet } from "lucide-react";
 
-export default async function AccountDetailPage({
+export default function AccountDetailPage({
   params,
 }: {
   params: Promise<{ id: string }>;
 }) {
-  const { id } = await params;
-  const user = await requireUser();
+  const { id } = use(params);
+  const { ready, accounts, categories, transactions } = useLocalData();
 
-  const account = await prisma.account.findFirst({
-    where: { id, userId: user.id },
-  });
-  if (!account) notFound();
+  const view = useMemo(() => {
+    const account = accountsWithBalances(accounts, transactions).find((a) => a.id === id);
+    const rows = listLocalTransactions(transactions, accounts, categories, {
+      accountId: id,
+    });
+    return { account, rows };
+  }, [accounts, categories, transactions, id]);
 
-  const [withBalances, txs] = await Promise.all([
-    getAccountsWithBalances(user.id),
-    listTransactions(user.id, { accountId: id }),
-  ]);
-  const balance = withBalances.find((a) => a.id === id)?.balance ?? 0;
+  if (!ready) return <PageLoading />;
+
+  const { account } = view;
+  if (!account) {
+    return (
+      <div className="space-y-4">
+        <Link href="/accounts" className="inline-flex items-center text-sm text-muted-foreground">
+          <ChevronLeft className="size-4" /> Accounts
+        </Link>
+        <EmptyState
+          icon={Wallet}
+          title="Account not found"
+          description="It may have been deleted on another device."
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
@@ -44,7 +62,7 @@ export default async function AccountDetailPage({
           <div>
             <p className="text-sm text-muted-foreground">{account.name}</p>
             <p className="text-2xl font-semibold tabular">
-              {formatMoney(balance, account.currency)}
+              {formatMoney(account.balance, account.currency)}
             </p>
             <p className="mt-1 text-xs text-muted-foreground">
               Opening {formatMoney(account.openingBalance, account.currency)}
@@ -57,7 +75,7 @@ export default async function AccountDetailPage({
               name: account.name,
               type: account.type,
               currency: account.currency,
-              openingBalance: toNumber(account.openingBalance),
+              openingBalance: account.openingBalance,
               note: account.note,
             }}
             trigger={<Button variant="outline" size="sm">Edit</Button>}
@@ -70,8 +88,7 @@ export default async function AccountDetailPage({
           Transactions
         </h2>
         <TransactionList
-          rows={txs.map(toTxRow)}
-          pendingFilter={{ accountId: id }}
+          rows={view.rows}
           emptyTitle="No transactions on this account"
           emptyDescription="Add income, an expense, or a transfer to see it here."
         />

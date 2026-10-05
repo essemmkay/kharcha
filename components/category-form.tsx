@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { toast } from "sonner";
-import { createCategory, updateCategory } from "@/lib/actions/categories";
+import { saveCategory } from "@/lib/sync/local-writes";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -41,14 +41,12 @@ export function CategoryForm({
   function submit(e: React.FormEvent) {
     e.preventDefault();
     startTransition(async () => {
-      const input = {
+      const res = await saveCategory({
+        id: category?.id,
         name,
         kind: category?.kind ?? kind,
         parentId: parentId === "none" ? null : parentId,
-      };
-      const res = category?.id
-        ? await updateCategory(category.id, input)
-        : await createCategory(input);
+      });
       if (!res.ok) {
         toast.error(res.error);
         return;
