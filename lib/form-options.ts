@@ -6,7 +6,7 @@ export async function getFormOptions(userId: string, includeArchived = false) {
     prisma.account.findMany({
       where: { userId, ...(includeArchived ? {} : { archived: false }) },
       orderBy: { createdAt: "asc" },
-      select: { id: true, name: true },
+      select: { id: true, name: true, currency: true },
     }),
     prisma.category.findMany({
       where: { userId, archived: false },

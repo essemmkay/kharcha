@@ -71,6 +71,7 @@ export default async function AccountDetailPage({
         </h2>
         <TransactionList
           rows={txs.map(toTxRow)}
+          pendingFilter={{ accountId: id }}
           emptyTitle="No transactions on this account"
           emptyDescription="Add income, an expense, or a transfer to see it here."
         />

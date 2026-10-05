@@ -6,10 +6,11 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 import { Trash2 } from "lucide-react";
 import {
-  createTransaction,
   deleteTransaction,
   updateTransaction,
 } from "@/lib/actions/transactions";
+import { enqueue } from "@/lib/sync/outbox";
+import type { TxRow } from "@/lib/tx-row";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +26,7 @@ import {
 } from "@/components/ui/select";
 
 type Opt = { id: string; name: string };
+type AccountOpt = { id: string; name: string; currency: string };
 type TxType = "INCOME" | "EXPENSE" | "TRANSFER";
 
 export type TransactionFormValues = {
@@ -50,7 +52,7 @@ export function TransactionForm({
   categories,
   transaction,
 }: {
-  accounts: Opt[];
+  accounts: AccountOpt[];
   categories: { INCOME: Opt[]; EXPENSE: Opt[] };
   transaction?: TransactionFormValues;
 }) {
@@ -98,18 +100,45 @@ export function TransactionForm({
         ? { ...base, type, toAccountId }
         : { ...base, type, categoryId: effectiveCategory };
 
-    startTransition(async () => {
-      const res = transaction
-        ? await updateTransaction(transaction.id, input)
-        : await createTransaction(input);
-      if (!res.ok) {
-        toast.error(res.error);
-        return;
-      }
-      toast.success(transaction ? "Transaction updated" : "Transaction added");
-      router.push("/transactions");
-      router.refresh();
-    });
+    // Edits of an existing row stay direct-to-server.
+    if (transaction) {
+      startTransition(async () => {
+        const res = await updateTransaction(transaction.id, input);
+        if (!res.ok) {
+          toast.error(res.error);
+          return;
+        }
+        toast.success("Transaction updated");
+        router.push("/transactions");
+        router.refresh();
+      });
+      return;
+    }
+
+    // New transactions go into the outbox: show instantly, sync in background.
+    const acc = accounts.find((a) => a.id === accountId);
+    const display: TxRow = {
+      id: crypto.randomUUID(),
+      type,
+      amount: Number(amount),
+      date: new Date(date).toISOString(),
+      account: acc?.name ?? "",
+      toAccount:
+        type === "TRANSFER"
+          ? accounts.find((a) => a.id === toAccountId)?.name ?? null
+          : null,
+      category:
+        type === "TRANSFER"
+          ? null
+          : catOptions.find((c) => c.id === effectiveCategory)?.name ?? null,
+      categoryColor: null,
+      note: note || null,
+      currency: acc?.currency ?? "USD",
+      tags: tagList,
+    };
+    enqueue(input, display);
+    toast.success("Transaction added");
+    router.push("/transactions");
   }
 
   function remove() {

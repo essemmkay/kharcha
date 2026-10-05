@@ -41,6 +41,7 @@ export default async function TransactionsPage({
       <TypeFilter />
       <TransactionList
         rows={txs.map(toTxRow)}
+        pendingFilter={{ type: type || undefined, accountId: accountId || undefined }}
         emptyTitle="No transactions this month"
         emptyDescription="Try another month, or tap + to add one."
       />

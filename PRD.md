@@ -17,6 +17,7 @@ Goals:
 - Export a PDF expense report for any date range.
 - Own the data; it lives in my own Postgres and survives a phone switch.
 - Zero hosting cost.
+- Adding a transaction is instant and works through a flaky or absent connection: it shows immediately and syncs in the background, with a visible count of unsynced items and a manual "Sync now".
 
 Non-goals (v1): bank sync, multi-currency FX conversion, budgets, recurring transactions, shared accounts, native mobile app, receipt OCR, attachments.
 

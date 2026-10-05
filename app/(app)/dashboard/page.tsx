@@ -151,6 +151,7 @@ export default async function DashboardPage({
         <CardContent>
           <TransactionList
             rows={recent.map(toTxRow)}
+            pendingFilter={{ accountId }}
             emptyTitle="No transactions yet"
             emptyDescription="Tap + to add your first one."
           />

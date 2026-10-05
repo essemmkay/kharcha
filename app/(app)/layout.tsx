@@ -1,6 +1,7 @@
 import { requireUser } from "@/lib/auth";
 import { BottomNav } from "@/components/bottom-nav";
 import { SideNav } from "@/components/side-nav";
+import { SyncBadge } from "@/components/sync-badge";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export default async function AppLayout({
@@ -17,7 +18,8 @@ export default async function AppLayout({
       <div className="flex min-h-dvh flex-1 flex-col">
         <header className="sticky top-0 z-30 flex h-14 items-center border-b bg-background/95 px-4 backdrop-blur">
           <span className="font-semibold tracking-tight md:hidden">Kharcha</span>
-          <div className="ml-auto">
+          <div className="ml-auto flex items-center gap-1">
+            <SyncBadge />
             <ThemeToggle />
           </div>
         </header>
