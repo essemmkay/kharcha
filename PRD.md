@@ -4,6 +4,8 @@
 
 I tracked income and expenses with "Wallet by Budget Bakers" and "Hysab Kytab". Wallet's free tier blocked adding new accounts. Hysab Kytab stopped syncing to its server, so switching phones risked losing all my history. I want a self-owned, mobile-first web app where I control the data, it persists server-side, and it costs nothing to host.
 
+> **Platform pivot (10/06/2026):** The client is moving from the installable PWA to a native **React Native** app. The reasons are native feel/speed and more reliable offline behavior than the service-worker PWA delivered. The Next.js app is kept as a **headless API** (route handlers only; the web frontend is retired). Backend, data model, Supabase, and the delta-sync protocol are unchanged. See ARCHITECTURE.md §16 and CLAUDE.md §13. References below to "web app", "PWA", and "home screen install" now read as the native app.
+
 ## 2. Target user
 
 A single user (me): mobile-first, privacy-conscious, tax-aware. Comfortable installing a web app to the phone home screen. Wants to migrate years of history and hand a clean PDF to an accountant.
@@ -19,7 +21,7 @@ Goals:
 - Zero hosting cost.
 - **Offline-first**: the whole app works with no connection. The device owns the full dataset locally; every read renders instantly from the local store and every write (add/edit/delete of accounts, categories, transactions) applies immediately and syncs in the background. A visible count of unsynced changes plus a manual "Sync now" is shown, and server-rejected changes can be discarded. Sync is incremental delta (push the local queue, pull only rows changed since last sync, including deletions). See CLAUDE.md §12 / ARCHITECTURE.md §6.
 
-Non-goals (v1): bank sync, multi-currency FX conversion, budgets, recurring transactions, shared accounts, native mobile app, receipt OCR, attachments. Multi-device concurrent editing is supported only under last-write-wins (single user assumed); profile edits (name/base currency) require a connection.
+Non-goals (v1): bank sync, multi-currency FX conversion, budgets, recurring transactions, shared accounts, receipt OCR, attachments. (The native mobile app is now in scope, see the platform pivot above.) Multi-device concurrent editing is supported only under last-write-wins (single user assumed); profile edits (name/base currency) require a connection.
 
 ## 4. User stories
 
@@ -109,7 +111,7 @@ PDF export
 
 ## 8. Out of scope / future roadmap
 
-Bank sync, multi-currency FX, budgets and goals, recurring transactions, shared or multi-user accounts, native mobile app, receipt OCR, and attachments.
+Bank sync, multi-currency FX, budgets and goals, recurring transactions, shared or multi-user accounts, receipt OCR, and attachments.
 
 ## 9. Summary and checklist
 

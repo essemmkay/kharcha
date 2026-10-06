@@ -272,3 +272,46 @@ Architecture checklist:
 - [ ] Client-side PDF with Web Share
 - [ ] Backup cron + documented restore
 - [ ] Vitest on money and aggregation logic
+
+## 16. Native client (React Native) and headless API
+
+> Pivot of 10/06/2026 (PRD platform pivot, CLAUDE.md §13). The Postgres data model (§3), Supabase, the delta-sync protocol (§6), and all per-user isolation stay as-is. What changes is the client (native app instead of PWA) and the transport (HTTP + Bearer token instead of cookie-session server actions).
+
+New diagram:
+
+```
+  React Native app (bare)
+    - op-sqlite local store (mirrors lib/db/local.ts tables)
+    - ported pure logic: local-queries, money, schemas, dates, types
+    - sync/engine over HTTP, triggers via NetInfo + AppState
+    - Supabase Auth; access token in the device keychain
+        |  HTTPS, Authorization: Bearer <supabase access token>
+        v
+  Vercel (Next.js, headless API only)
+    - app/api/sync       (GET pull: pullChanges logic)
+    - app/api/accounts   (POST create/update/delete)
+    - app/api/categories (POST create/update/delete)
+    - app/api/transactions (POST create/update/delete)
+    - requireUser() verifies the Supabase JWT from the Authorization header
+        |  Prisma (pooled connection)
+        v
+  Supabase (Postgres + Auth), GitHub Actions pg_dump cron (unchanged)
+```
+
+**Auth change (supersedes §4 transport, not the identity model).** The app signs in with `@supabase/supabase-js` and stores the access token in `react-native-keychain`. Every API call sends `Authorization: Bearer <token>`. `requireUser()` is changed from reading the `@supabase/ssr` cookie to verifying that Bearer token (`supabase.auth.getUser(token)` with the service role, or local JWT verification), then resolving or creating the app `User` row by `authId` exactly as before. The web cookie/middleware path (§4) is retired with the web frontend.
+
+**API surface change (supersedes §5 as the live surface).** The write server actions (`accounts`/`categories`/`transactions` create/update/delete) and `pullChanges` (§6) keep their bodies and become the route handlers listed above. The RSC read helpers (`listAccounts`, `getMonthlySummary`, etc.) are dropped: reads now run on-device from `lib/local-queries.ts`. The `/api/backup` cron (§11) is unchanged.
+
+**Client store change (supersedes §6 host, not protocol).** Dexie/IndexedDB is replaced by op-sqlite with the same table shapes. The pure aggregations (`local-queries`), `money`, `schemas`, `dates`, and `sync/types` port unchanged. `sync/engine` keeps its merge/queue/last-write-wins logic; its action imports become `fetch` calls and its `online`/visibility triggers become `@react-native-community/netinfo` + `AppState`. The queue is persisted in SQLite with retry/backoff. The service worker shell (§6 offline shell) is gone; native owns offline.
+
+**PDF change (supersedes §9).** jsPDF (browser) is replaced by an HTML report template rendered with `react-native-html-to-pdf`, shared via the native share sheet. The report data assembly stays in `lib/local-queries.ts`.
+
+**Charts.** Recharts is replaced by `victory-native`; the aggregation inputs are unchanged.
+
+Native client checklist:
+- [ ] Phase 1: 4 route handlers reuse the action bodies; `requireUser()` verifies Bearer JWT; web frontend routes removed
+- [ ] Phase 2: bare RN + NativeWind + React Navigation (6 tabs) + Supabase Auth + keychain
+- [ ] Phase 3: op-sqlite store + ported pure logic + rewired engine; ported tests pass
+- [ ] Phase 4: 6 screens, charts on victory-native
+- [ ] Phase 5: HTML-based PDF export + release build
+- [ ] No DB migration (schema already sync-ready)
