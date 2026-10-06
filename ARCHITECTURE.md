@@ -285,7 +285,7 @@ New diagram:
     - ported pure logic: local-queries, money, schemas, dates, types
     - sync engine over HTTP, triggers via NetInfo + AppState
     - Supabase Auth; access token in expo-secure-store
-    - Expo Router (6 tabs), victory-native charts, expo-print PDF
+    - Expo Router (6 tabs), react-native-gifted-charts, expo-print PDF
         |  HTTPS, Authorization: Bearer <supabase access token>
         v
   Vercel (Next.js, headless API only)
@@ -307,12 +307,12 @@ New diagram:
 
 **PDF change (supersedes §9).** jsPDF (browser) is replaced by an HTML report template rendered with `expo-print` and shared via `expo-sharing`. The report data assembly stays in the ported `local-queries`.
 
-**Charts.** Recharts is replaced by `victory-native`; the aggregation inputs are unchanged.
+**Charts.** Recharts is replaced by `react-native-gifted-charts` (pure JS, Expo Go compatible; `react-native-svg` is the only native dependency). Chosen over victory-native to avoid a Skia dev build during development. The aggregation inputs are unchanged.
 
 Native client checklist:
 - [x] Phase 1: 4 route handlers reuse the action bodies; `requireUser()` verifies Bearer JWT; web frontend routes removed
 - [x] Phase 2: Expo app in `mobile/` + Supabase Auth + expo-secure-store + Expo Router (6 tabs)
 - [x] Phase 3: expo-sqlite store + ported pure logic + rewired engine; ported tests pass (device runtime verification pending)
-- [◑] Phase 4: CRUD screens done (accounts, categories, transactions, reports summary) with a plain-StyleSheet UI kit; dashboard charts still to build
+- [x] Phase 4: CRUD screens (accounts, categories, transactions, reports summary) + dashboard with gifted-charts (donut/bar/line, month switcher), plain-StyleSheet UI kit
 - [ ] Phase 5: expo-print PDF export + release build (EAS or local)
 - [ ] No DB migration (schema already sync-ready)
