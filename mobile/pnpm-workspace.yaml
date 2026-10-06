@@ -1,0 +1,4 @@
+# Standalone Expo app. This marker makes pnpm treat mobile/ as its own
+# workspace root, isolated from the parent Next.js repo's pnpm workspace,
+# so RN/Expo deps get their own hoisted node_modules (see .npmrc).
+packages: []
