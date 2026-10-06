@@ -22,6 +22,7 @@ import type { Entity, Mutation, Op, SyncSnapshot } from "@/lib/sync/types";
 // ---- "syncing" flag, for useSyncExternalStore ----------------------------
 
 let syncing = false;
+let lastError: string | null = null;
 const listeners = new Set<() => void>();
 function emit() {
   for (const l of listeners) l();
@@ -32,6 +33,10 @@ export function subscribeSyncing(l: () => void): () => void {
 }
 export function getSyncing(): boolean {
   return syncing;
+}
+// Last pull failure message (config/network), cleared on a successful pull.
+export function getLastError(): string | null {
+  return lastError;
 }
 
 // ---- Queueing -------------------------------------------------------------
@@ -97,10 +102,16 @@ async function pull(): Promise<void> {
   let res: ActionResult<SyncSnapshot>;
   try {
     res = await apiGet<SyncSnapshot>(`/api/sync${qs}`);
-  } catch {
-    return; // Transient: retry next sync.
+  } catch (e) {
+    lastError = e instanceof Error ? e.message : "Sync failed";
+    emit();
+    return;
   }
-  if (!res.ok) return;
+  if (!res.ok) {
+    lastError = res.error;
+    emit();
+    return;
+  }
   const snap = res.data;
 
   const db = await getDb();
@@ -123,6 +134,10 @@ async function pull(): Promise<void> {
     name: snap.user.name,
     baseCurrency: snap.user.baseCurrency,
   });
+  if (lastError !== null) {
+    lastError = null;
+    emit();
+  }
 }
 
 // ---- sync() = push then pull ----------------------------------------------

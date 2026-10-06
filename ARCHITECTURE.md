@@ -307,7 +307,7 @@ New diagram:
 
 **PDF change (supersedes §9).** jsPDF (browser) is replaced by an HTML report template rendered with `expo-print` and shared via `expo-sharing`. The report data assembly stays in the ported `local-queries`.
 
-**Charts.** Recharts is replaced by `react-native-gifted-charts` (pure JS, Expo Go compatible; `react-native-svg` is the only native dependency). Chosen over victory-native to avoid a Skia dev build during development. The aggregation inputs are unchanged.
+**Charts.** Recharts is replaced by `react-native-gifted-charts` (Expo Go compatible; native deps `react-native-svg` + `expo-linear-gradient`). Chosen over victory-native to avoid a Skia dev build during development. gifted-charts loads the gradient package via a dynamic require, so a missing `expo-linear-gradient` errors only at runtime, not during a Metro bundle. The aggregation inputs are unchanged.
 
 Native client checklist:
 - [x] Phase 1: 4 route handlers reuse the action bodies; `requireUser()` verifies Bearer JWT; web frontend routes removed

@@ -8,7 +8,7 @@ import {
 } from "react-native";
 import { addMonths, format, isSameMonth, subMonths } from "date-fns";
 import { useLocalData } from "@/lib/use-data";
-import { getSyncing, subscribeSyncing } from "@/lib/sync/engine";
+import { getLastError, getSyncing, subscribeSyncing } from "@/lib/sync/engine";
 import {
   incomeExpenseSeries,
   monthlySummary,
@@ -23,6 +23,11 @@ export default function DashboardScreen() {
   const { ready, accounts, categories, transactions, baseCurrency } =
     useLocalData();
   const syncing = useSyncExternalStore(subscribeSyncing, getSyncing, getSyncing);
+  const syncError = useSyncExternalStore(
+    subscribeSyncing,
+    getLastError,
+    getLastError,
+  );
   const [month, setMonth] = useState(new Date());
 
   if (!ready) {
@@ -46,6 +51,7 @@ export default function DashboardScreen() {
         <Text style={styles.label}>Net worth</Text>
         <Text style={styles.netWorth}>{money(total)}</Text>
         <Text style={styles.sync}>{syncing ? "Syncing…" : "Up to date"}</Text>
+        {syncError ? <Text style={styles.syncError}>{syncError}</Text> : null}
       </View>
 
       <View style={styles.switcher}>
@@ -107,6 +113,7 @@ const styles = StyleSheet.create({
   label: { fontSize: 14, color: colors.muted },
   netWorth: { fontSize: 34, fontWeight: "700", color: colors.text },
   sync: { fontSize: 12, color: colors.muted, marginTop: 2 },
+  syncError: { fontSize: 12, color: colors.danger, marginTop: 4 },
   switcher: {
     flexDirection: "row",
     alignItems: "center",

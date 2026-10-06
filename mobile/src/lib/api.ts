@@ -39,6 +39,15 @@ async function request<T>(
   if (res.status >= 500 || res.status === 401) {
     throw new Error(`Transient HTTP ${res.status}`);
   }
+  // Anything other than a JSON API response (e.g. an HTML 404/landing page when
+  // EXPO_PUBLIC_API_URL points at a deploy without the /api routes) is a config
+  // error, not a transient one. Surface it clearly instead of failing on parse.
+  const contentType = res.headers.get("content-type") ?? "";
+  if (!contentType.includes("application/json")) {
+    throw new Error(
+      `${path} returned ${res.status} ${contentType || "non-JSON"}. Is EXPO_PUBLIC_API_URL pointing at the deployed headless API?`,
+    );
+  }
   return (await res.json()) as ActionResult<T>;
 }
 
