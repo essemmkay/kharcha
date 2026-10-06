@@ -1,22 +1,37 @@
 import { useState } from "react";
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Alert, Platform, StyleSheet, Text, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { format } from "date-fns";
 import { useLocalData } from "@/lib/use-data";
 import { report } from "@/lib/local-queries";
 import { monthRange } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
+import { exportReportPdf } from "@/lib/report-pdf";
 import { Screen, Card, Button, colors } from "@/lib/ui";
 
 export default function ReportsScreen() {
-  const { accounts, categories, transactions, baseCurrency } = useLocalData();
+  const { accounts, categories, transactions, baseCurrency, name, email } =
+    useLocalData();
   const initial = monthRange();
   const [from, setFrom] = useState(initial.from);
   const [to, setTo] = useState(initial.to);
   const [picking, setPicking] = useState<"from" | "to" | null>(null);
+  const [exporting, setExporting] = useState(false);
 
   const data = report(transactions, accounts, categories, from, to);
   const money = (n: number) => formatMoney(n, baseCurrency);
+
+  const onExport = async () => {
+    setExporting(true);
+    const err = await exportReportPdf(data, {
+      userName: name ?? email ?? "Kharcha user",
+      from,
+      to,
+      currency: baseCurrency,
+    });
+    setExporting(false);
+    if (err) Alert.alert("Export failed", err);
+  };
 
   return (
     <Screen scroll>
@@ -94,9 +109,11 @@ export default function ReportsScreen() {
         ))}
       </Section>
 
-      <Text style={styles.footnote}>
-        PDF export arrives in Phase 5.
-      </Text>
+      <Button
+        label={exporting ? "Preparing PDF…" : "Export PDF"}
+        onPress={onExport}
+        disabled={exporting}
+      />
     </Screen>
   );
 }
@@ -131,5 +148,4 @@ const styles = StyleSheet.create({
   },
   lineName: { color: colors.text },
   lineVal: { color: colors.text, fontWeight: "500" },
-  footnote: { color: colors.muted, fontSize: 12, textAlign: "center", marginTop: 8 },
 });

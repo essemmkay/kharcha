@@ -314,5 +314,5 @@ Native client checklist:
 - [x] Phase 2: Expo app in `mobile/` + Supabase Auth + expo-secure-store + Expo Router (6 tabs)
 - [x] Phase 3: expo-sqlite store + ported pure logic + rewired engine; ported tests pass (device runtime verification pending)
 - [x] Phase 4: CRUD screens (accounts, categories, transactions, reports summary) + dashboard with gifted-charts (donut/bar/line, month switcher), plain-StyleSheet UI kit
-- [ ] Phase 5: expo-print PDF export + release build (EAS or local)
+- [x] Phase 5: expo-print/expo-sharing PDF export (code-complete); release config scaffolded (eas.json, bundle ids) — actual EAS/local build + app icon pending
 - [ ] No DB migration (schema already sync-ready)
