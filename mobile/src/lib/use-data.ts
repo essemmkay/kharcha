@@ -42,5 +42,6 @@ export function useLocalData() {
     baseCurrency: data?.meta.baseCurrency ?? "USD",
     email: data?.meta.email ?? null,
     name: data?.meta.name ?? null,
+    bankLinks: data?.meta.bankLinks ?? {},
   };
 }

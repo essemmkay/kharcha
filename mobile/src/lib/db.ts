@@ -19,6 +19,9 @@ export type SyncMeta = {
   email: string | null;
   name: string | null;
   baseCurrency: string;
+  // Device-local account -> bank slug links (for logos). Not synced: lives only
+  // in meta, which the sync pull never rewrites. Cosmetic, so per-device is ok.
+  bankLinks: Record<string, string>;
 };
 
 export type QueueRow = Mutation & { seq: number };
@@ -28,6 +31,7 @@ const DEFAULT_META: SyncMeta = {
   email: null,
   name: null,
   baseCurrency: "USD",
+  bankLinks: {},
 };
 
 let database: SQLite.SQLiteDatabase | null = null;
@@ -167,6 +171,18 @@ export async function setMeta(patch: Partial<SyncMeta>): Promise<void> {
      ON CONFLICT(key) DO UPDATE SET value = excluded.value`,
     [JSON.stringify(next)],
   );
+}
+
+// Link (or unlink with null) an account to a bank slug for its logo. Local only.
+export async function setBankLink(
+  accountId: string,
+  slug: string | null,
+): Promise<void> {
+  const { bankLinks } = await getMeta();
+  const next = { ...bankLinks };
+  if (slug) next[accountId] = slug;
+  else delete next[accountId];
+  await setMeta({ bankLinks: next });
 }
 
 // Fires whenever any table changes, so the read hook can reload.

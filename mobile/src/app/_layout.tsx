@@ -3,6 +3,16 @@ import { ActivityIndicator, View } from "react-native";
 import { Stack, useRouter, useSegments } from "expo-router";
 import { StatusBar } from "expo-status-bar";
 import { AuthProvider, useAuth } from "@/lib/auth";
+import { colors } from "@/lib/ui";
+
+const modalHeader = {
+  presentation: "modal" as const,
+  headerStyle: { backgroundColor: colors.bg },
+  headerTitleStyle: { color: colors.text, fontWeight: "700" as const },
+  headerShadowVisible: false,
+  headerTintColor: colors.primary,
+  contentStyle: { backgroundColor: colors.bg },
+};
 
 // Redirects between the auth stack and the tabs based on the session, once the
 // initial session load settles. Groups in parentheses are transparent in the
@@ -21,8 +31,15 @@ function RootNavigator() {
 
   if (loading) {
     return (
-      <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-        <ActivityIndicator />
+      <View
+        style={{
+          flex: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          backgroundColor: colors.bg,
+        }}
+      >
+        <ActivityIndicator color={colors.primary} />
       </View>
     );
   }
@@ -30,17 +47,11 @@ function RootNavigator() {
     <Stack>
       <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
       <Stack.Screen name="(auth)" options={{ headerShown: false }} />
-      <Stack.Screen
-        name="account-form"
-        options={{ presentation: "modal", title: "Account" }}
-      />
-      <Stack.Screen
-        name="category-form"
-        options={{ presentation: "modal", title: "Category" }}
-      />
+      <Stack.Screen name="account-form" options={{ ...modalHeader, title: "Account" }} />
+      <Stack.Screen name="category-form" options={{ ...modalHeader, title: "Category" }} />
       <Stack.Screen
         name="transaction-form"
-        options={{ presentation: "modal", title: "Transaction" }}
+        options={{ ...modalHeader, title: "Transaction" }}
       />
     </Stack>
   );

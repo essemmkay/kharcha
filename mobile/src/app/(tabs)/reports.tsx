@@ -1,13 +1,24 @@
 import { useState } from "react";
-import { Alert, Platform, StyleSheet, Text, View } from "react-native";
+import { Alert, Platform, Pressable, StyleSheet, Text, View } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { Ionicons } from "@expo/vector-icons";
 import { format } from "date-fns";
 import { useLocalData } from "@/lib/use-data";
 import { report } from "@/lib/local-queries";
 import { monthRange } from "@/lib/dates";
 import { formatMoney } from "@/lib/money";
 import { exportReportPdf } from "@/lib/report-pdf";
-import { Screen, Card, Button, colors } from "@/lib/ui";
+import {
+  Screen,
+  Card,
+  Button,
+  SectionTitle,
+  ListRow,
+  RowGroup,
+  colors,
+  moneyFont,
+  radius,
+} from "@/lib/ui";
 
 export default function ReportsScreen() {
   const { accounts, categories, transactions, baseCurrency, name, email } =
@@ -36,22 +47,8 @@ export default function ReportsScreen() {
   return (
     <Screen scroll>
       <View style={styles.rangeRow}>
-        <View style={styles.rangeItem}>
-          <Text style={styles.label}>From</Text>
-          <Button
-            label={format(from, "PP")}
-            variant="outline"
-            onPress={() => setPicking("from")}
-          />
-        </View>
-        <View style={styles.rangeItem}>
-          <Text style={styles.label}>To</Text>
-          <Button
-            label={format(to, "PP")}
-            variant="outline"
-            onPress={() => setPicking("to")}
-          />
-        </View>
+        <RangeField label="From" value={from} onPress={() => setPicking("from")} />
+        <RangeField label="To" value={to} onPress={() => setPicking("to")} />
       </View>
 
       {picking ? (
@@ -68,84 +65,144 @@ export default function ReportsScreen() {
 
       <Card>
         <View style={styles.totalRow}>
-          <Text style={styles.muted}>Income</Text>
-          <Text style={{ color: colors.income, fontWeight: "600" }}>
+          <View style={styles.legendLeft}>
+            <View style={[styles.dot, { backgroundColor: colors.income }]} />
+            <Text style={styles.muted}>Income</Text>
+          </View>
+          <Text style={[styles.amt, { color: colors.income }]}>
             {money(data.totals.income)}
           </Text>
         </View>
         <View style={styles.totalRow}>
-          <Text style={styles.muted}>Expense</Text>
-          <Text style={{ color: colors.danger, fontWeight: "600" }}>
+          <View style={styles.legendLeft}>
+            <View style={[styles.dot, { backgroundColor: colors.danger }]} />
+            <Text style={styles.muted}>Expense</Text>
+          </View>
+          <Text style={[styles.amt, { color: colors.danger }]}>
             {money(data.totals.expense)}
           </Text>
         </View>
         <View style={[styles.totalRow, styles.net]}>
-          <Text style={{ fontWeight: "700" }}>Net</Text>
-          <Text style={{ fontWeight: "700" }}>{money(data.totals.net)}</Text>
+          <Text style={styles.netLabel}>Net</Text>
+          <Text
+            style={[
+              styles.netAmt,
+              { color: data.totals.net >= 0 ? colors.income : colors.danger },
+            ]}
+          >
+            {money(data.totals.net)}
+          </Text>
         </View>
       </Card>
 
-      <Section title="By category">
-        {data.byCategory.length === 0 ? (
+      <SectionTitle>By category</SectionTitle>
+      {data.byCategory.length === 0 ? (
+        <Card>
           <Text style={styles.muted}>No activity in this range.</Text>
-        ) : (
-          data.byCategory.map((c) => (
-            <View key={c.name} style={styles.line}>
-              <Text style={styles.lineName}>{c.name}</Text>
-              <Text style={styles.lineVal}>{money(c.expense || c.income)}</Text>
-            </View>
-          ))
-        )}
-      </Section>
+        </Card>
+      ) : (
+        <RowGroup>
+          {data.byCategory.map((c, i) => (
+            <ListRow
+              key={c.name}
+              last={i === data.byCategory.length - 1}
+              title={c.name}
+              right={
+                <Text style={styles.lineVal}>{money(c.expense || c.income)}</Text>
+              }
+            />
+          ))}
+        </RowGroup>
+      )}
 
-      <Section title="By account">
-        {data.byAccount.map((a) => (
-          <View key={a.name} style={styles.line}>
-            <Text style={styles.lineName}>{a.name}</Text>
-            <Text style={styles.lineVal}>
-              {money(a.income - a.expense)}
-            </Text>
-          </View>
-        ))}
-      </Section>
+      <SectionTitle>By account</SectionTitle>
+      <RowGroup>
+        {data.byAccount.map((a, i) => {
+          const net = a.income - a.expense;
+          return (
+            <ListRow
+              key={a.name}
+              last={i === data.byAccount.length - 1}
+              title={a.name}
+              right={
+                <Text
+                  style={[
+                    styles.lineVal,
+                    { color: net < 0 ? colors.danger : colors.text },
+                  ]}
+                >
+                  {money(net)}
+                </Text>
+              }
+            />
+          );
+        })}
+      </RowGroup>
 
-      <Button
-        label={exporting ? "Preparing PDF…" : "Export PDF"}
-        onPress={onExport}
-        disabled={exporting}
-      />
+      <View style={{ marginTop: 8 }}>
+        <Button
+          label={exporting ? "Preparing PDF…" : "Export PDF"}
+          icon="download-outline"
+          onPress={onExport}
+          disabled={exporting}
+        />
+      </View>
     </Screen>
   );
 }
 
-function Section({ title, children }: { title: string; children: React.ReactNode }) {
+function RangeField({
+  label,
+  value,
+  onPress,
+}: {
+  label: string;
+  value: Date;
+  onPress: () => void;
+}) {
   return (
-    <View style={{ gap: 6 }}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      {children}
-    </View>
+    <Pressable style={styles.rangeField} onPress={onPress}>
+      <Text style={styles.rangeLabel}>{label}</Text>
+      <View style={styles.rangeValueRow}>
+        <Ionicons name="calendar-outline" size={16} color={colors.muted} />
+        <Text style={styles.rangeValue}>{format(value, "MMM d, yyyy")}</Text>
+      </View>
+    </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
   rangeRow: { flexDirection: "row", gap: 12 },
-  rangeItem: { flex: 1, gap: 6 },
-  label: { fontSize: 13, color: colors.muted, fontWeight: "500" },
-  muted: { color: colors.muted },
+  rangeField: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderColor: colors.border,
+    padding: 12,
+    gap: 6,
+  },
+  rangeLabel: { fontSize: 12, color: colors.muted, fontWeight: "600" },
+  rangeValueRow: { flexDirection: "row", alignItems: "center", gap: 6 },
+  rangeValue: { fontSize: 15, fontWeight: "600", color: colors.text },
+
+  muted: { color: colors.muted, fontSize: 15 },
+  legendLeft: { flexDirection: "row", alignItems: "center", gap: 9 },
+  dot: { width: 9, height: 9, borderRadius: 5 },
+  amt: { fontWeight: "700", fontSize: 15, ...moneyFont },
   totalRow: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingVertical: 6,
+    alignItems: "center",
+    paddingVertical: 7,
   },
-  net: { borderTopWidth: 1, borderTopColor: colors.border, marginTop: 4, paddingTop: 10 },
-  sectionTitle: { fontSize: 16, fontWeight: "700", marginTop: 4 },
-  line: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  net: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    borderTopColor: colors.border,
+    marginTop: 4,
+    paddingTop: 12,
   },
-  lineName: { color: colors.text },
-  lineVal: { color: colors.text, fontWeight: "500" },
+  netLabel: { fontWeight: "700", fontSize: 16, color: colors.text },
+  netAmt: { fontWeight: "800", fontSize: 18, ...moneyFont },
+  lineVal: { color: colors.text, fontWeight: "600", fontSize: 15, ...moneyFont },
 });

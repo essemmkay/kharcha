@@ -7,14 +7,21 @@ import {
   setAccountArchived,
   deleteAccount,
 } from "@/lib/sync/local-writes";
+import { setBankLink } from "@/lib/db";
+import { PK_BANKS } from "@/lib/pk-banks";
 import { accountTypes } from "@/lib/schemas";
-import { Screen, TextField, Segmented, Button } from "@/lib/ui";
+import { Screen, TextField, Segmented, ChipPicker, Button } from "@/lib/ui";
+
+const BANK_OPTIONS = [
+  { id: "", name: "None" },
+  ...PK_BANKS.map((b) => ({ id: b.slug, name: b.name })),
+];
 
 type AccountType = (typeof accountTypes)[number];
 
 export default function AccountForm() {
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const { accounts } = useLocalData();
+  const { accounts, bankLinks } = useLocalData();
   const existing = id ? accounts.find((a) => a.id === id) : undefined;
 
   const [name, setName] = useState("");
@@ -22,6 +29,7 @@ export default function AccountForm() {
   const [currency, setCurrency] = useState("USD");
   const [openingBalance, setOpeningBalance] = useState("0");
   const [note, setNote] = useState("");
+  const [bankSlug, setBankSlug] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loaded, setLoaded] = useState(false);
 
@@ -33,9 +41,10 @@ export default function AccountForm() {
       setCurrency(existing.currency);
       setOpeningBalance(String(existing.openingBalance));
       setNote(existing.note ?? "");
+      setBankSlug(bankLinks[existing.id] ?? null);
       setLoaded(true);
     }
-  }, [existing, loaded]);
+  }, [existing, loaded, bankLinks]);
 
   const onSave = async () => {
     setError(null);
@@ -47,8 +56,13 @@ export default function AccountForm() {
       openingBalance,
       note,
     });
-    if (res.ok) router.back();
-    else setError(res.error);
+    if (!res.ok) {
+      setError(res.error);
+      return;
+    }
+    // Bank link is device-local (not synced); only BANK accounts keep one.
+    await setBankLink(res.data.id, type === "BANK" ? bankSlug : null);
+    router.back();
   };
 
   const onArchive = async () => {
@@ -91,6 +105,14 @@ export default function AccountForm() {
         onChange={setType}
         options={accountTypes.map((t) => ({ value: t, label: t }))}
       />
+      {type === "BANK" ? (
+        <ChipPicker
+          label="Bank (for logo)"
+          value={bankSlug ?? ""}
+          options={BANK_OPTIONS}
+          onChange={(v) => setBankSlug(v || null)}
+        />
+      ) : null}
       <TextField
         label="Currency"
         value={currency}

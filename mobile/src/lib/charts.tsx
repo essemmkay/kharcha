@@ -1,14 +1,16 @@
 import { Dimensions, StyleSheet, Text, View } from "react-native";
 import { BarChart, LineChart, PieChart } from "react-native-gifted-charts";
+import { compactNumber } from "@/lib/compact";
 import { formatMoney } from "@/lib/money";
 import { colors } from "@/lib/ui";
 
 const WIDTH = Dimensions.get("window").width - 64;
 
-// Fallback palette for categories without an assigned color.
+// Fallback palette for categories without an assigned color. Harmonized with
+// the indigo/violet brand accent.
 const PALETTE = [
-  "#2563eb", "#16a34a", "#dc2626", "#d97706", "#7c3aed",
-  "#0891b2", "#db2777", "#65a30d", "#ea580c", "#4f46e5",
+  "#6366F1", "#8B5CF6", "#06B6D4", "#10B981", "#F59E0B",
+  "#EC4899", "#3B82F6", "#14B8A6", "#F43F5E", "#A855F7",
 ];
 
 function Empty({ text }: { text: string }) {
@@ -80,8 +82,9 @@ export function IncomeExpenseBar({
       value: s.income,
       frontColor: colors.income,
       label: s.label,
-      spacing: 2,
+      spacing: 3,
       labelWidth: 34,
+      labelTextStyle: { color: colors.muted, fontSize: 11 },
     },
     { value: s.expense, frontColor: colors.danger },
   ]);
@@ -91,11 +94,13 @@ export function IncomeExpenseBar({
       data={barData}
       width={WIDTH}
       height={160}
-      barWidth={12}
+      barWidth={11}
+      barBorderRadius={4}
       spacing={18}
       noOfSections={3}
       yAxisThickness={0}
       xAxisThickness={0}
+      yAxisTextStyle={{ color: colors.faint, fontSize: 10 }}
       hideRules
       disableScroll
     />
@@ -113,15 +118,29 @@ export function NetWorthLine({
   return (
     <LineChart
       data={lineData}
-      width={WIDTH}
+      // gifted-charts renders the y-axis label column OUTSIDE `width`, so budget
+      // for it here or the chart overruns the card. adjustToWidth spreads the
+      // points across the remaining width.
+      width={WIDTH - 44}
+      adjustToWidth
+      yAxisLabelWidth={40}
+      endSpacing={0}
       height={160}
       color={colors.primary}
-      thickness={2}
+      thickness={2.5}
       curved
+      areaChart
+      startFillColor={colors.primary}
+      endFillColor={colors.primary}
+      startOpacity={0.22}
+      endOpacity={0.02}
       hideDataPoints
       noOfSections={3}
       yAxisThickness={0}
       xAxisThickness={0}
+      yAxisTextStyle={{ color: colors.faint, fontSize: 10 }}
+      formatYLabel={(label) => compactNumber(Number(label))}
+      xAxisLabelTextStyle={{ color: colors.muted, fontSize: 11 }}
       hideRules
       disableScroll
     />
