@@ -132,7 +132,34 @@ body {
 .badge.sync { background: var(--primary-soft); color: var(--primary); }
 
 .center { display: flex; align-items: center; justify-content: center; min-height: 60vh; flex-direction: column; gap: 12px; }
-.auth-wrap { max-width: 360px; margin: 10vh auto; padding: 0 16px; }
+
+/* Login — the ink "black card" brand panel over the sign-in form */
+.login { min-height: 100%; display: grid; place-items: center; padding: 32px 16px; }
+.login-card {
+  width: 100%; max-width: 380px; background: var(--surface);
+  border: 1px solid var(--border); border-radius: var(--radius-lg);
+  overflow: hidden; box-shadow: 0 18px 50px rgba(16, 24, 40, 0.12);
+}
+.login-hero { position: relative; background: var(--ink); color: #fff; padding: 26px 24px 22px; }
+.login-hero .chip {
+  position: absolute; top: 24px; right: 24px;
+  width: 36px; height: 27px; border-radius: 6px; background: #d8b25a;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.18);
+}
+.login-hero .chip::after {
+  content: ""; position: absolute; inset: 7px 6px; border-radius: 2px;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.22);
+}
+.login-hero .mark { font-size: 27px; font-weight: 800; letter-spacing: -0.5px; }
+.login-hero .tag { color: rgba(255, 255, 255, 0.6); font-size: 13.5px; margin-top: 6px; }
+.login-hero .digits {
+  margin-top: 22px; font-size: 15px; letter-spacing: 3px;
+  color: rgba(255, 255, 255, 0.28); font-variant-numeric: tabular-nums;
+}
+.login-body { padding: 24px; }
+.login-body h2 { font-size: 19px; font-weight: 700; margin: 0; letter-spacing: -0.2px; }
+.login-body .sub { color: var(--muted); font-size: 14px; margin: 4px 0 18px; }
+.login-foot { text-align: center; color: var(--faint); font-size: 12.5px; margin: 18px 0 0; }
 
 a.plain { color: inherit; text-decoration: none; }
 .fab {

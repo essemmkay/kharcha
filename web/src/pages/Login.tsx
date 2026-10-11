@@ -18,39 +18,52 @@ export default function Login() {
   };
 
   return (
-    <div className="auth-wrap">
-      <h1 className="brand" style={{ fontSize: 28, marginBottom: 4 }}>
-        Kharcha
-      </h1>
-      <p className="muted" style={{ marginTop: 0 }}>Sign in to your account</p>
-      <form onSubmit={submit}>
-        <div className="field">
-          <label htmlFor="email">Email</label>
-          <input
-            id="email"
-            type="email"
-            autoComplete="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+    <div className="login">
+      <div className="login-card">
+        <div className="login-hero">
+          <span className="chip" aria-hidden />
+          <div className="mark">Kharcha</div>
+          <div className="tag">Your money, your data.</div>
+          <div className="digits" aria-hidden>
+            •••• •••• •••• 2048
+          </div>
         </div>
-        <div className="field">
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            autoComplete="current-password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-          />
-        </div>
-        {error ? <div className="error">{error}</div> : null}
-        <button className="btn block" type="submit" disabled={busy}>
-          {busy ? "Signing in…" : "Sign in"}
-        </button>
-      </form>
+
+        <form className="login-body" onSubmit={submit}>
+          <h2>Welcome back</h2>
+          <p className="sub">Sign in to continue.</p>
+
+          <div className="field">
+            <label htmlFor="email">Email</label>
+            <input
+              id="email"
+              type="email"
+              autoComplete="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
+          </div>
+          <div className="field">
+            <label htmlFor="password">Password</label>
+            <input
+              id="password"
+              type="password"
+              autoComplete="current-password"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          {error ? <div className="error">{error}</div> : null}
+
+          <button className="btn block" type="submit" disabled={busy}>
+            {busy ? "Signing in…" : "Sign in"}
+          </button>
+        </form>
+      </div>
+      <p className="login-foot">Self-owned finance tracker</p>
     </div>
   );
 }
