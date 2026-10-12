@@ -14,9 +14,9 @@ export default defineConfig({
       manifest: {
         name: "Kharcha",
         short_name: "Kharcha",
-        description: "Personal finance tracker",
-        theme_color: "#4F46E5",
-        background_color: "#F4F5FA",
+        description: "Your money, your data. A self-owned personal finance tracker.",
+        theme_color: "#0e3b2b",
+        background_color: "#efe8d8",
         display: "standalone",
         start_url: "/",
         icons: [
