@@ -1,0 +1,58 @@
+{
+  "name": "Kharcha — The Engraving",
+  "scope": "web",
+  "mode": "operate",
+  "updated": "2026-10-12",
+  "seed": "7d1655eb",
+  "fonts": {
+    "display": "Libre Caslon Display",
+    "serif": "Libre Caslon Text",
+    "cap": "Archivo",
+    "figures": "Archivo"
+  },
+  "tokens": {
+    "light": {
+      "paper": "#efe8d8",
+      "paper-2": "#e6ddc8",
+      "paper-edge": "#d9cfb6",
+      "green": "#0e3b2b",
+      "green-2": "#0a2c20",
+      "ink": "#23201a",
+      "ink-soft": "#4a4336",
+      "sepia": "#6b5330",
+      "gold": "#b58a3c",
+      "gold-soft": "#cdae6a",
+      "accent": "#0e3b2b",
+      "on-accent": "#f1ead6",
+      "income": "#13553b",
+      "expense": "#9c2b24",
+      "transfer": "#6b5330",
+      "rule": "rgba(35,32,26,.26)",
+      "rule-soft": "rgba(35,32,26,.13)",
+      "studio": "#1b2320"
+    },
+    "dark": {
+      "paper": "#0c1512",
+      "paper-2": "#0f1b16",
+      "paper-edge": "#16271f",
+      "green": "#0e3b2b",
+      "green-2": "#0a2c20",
+      "ink": "#edefe4",
+      "ink-soft": "#9fb0a4",
+      "sepia": "#c3a86a",
+      "gold": "#b58a3c",
+      "gold-soft": "#cdae6a",
+      "accent": "#3f9d73",
+      "on-accent": "#06140e",
+      "income": "#5cc69a",
+      "expense": "#e0756a",
+      "transfer": "#c3a86a",
+      "rule": "rgba(230,224,200,.2)",
+      "rule-soft": "rgba(230,224,200,.1)",
+      "studio": "#0a110e"
+    }
+  },
+  "palette": ["#9c2b24", "#13553b", "#27456b", "#9a7322", "#5a2f4a", "#1f5a56", "#6b5330", "#4f5a28"],
+  "radius": { "card": "12px", "note": "16px", "pill": "999px" },
+  "shell": { "maxWidth": "460px", "nav": "5-tab bottom", "theme": "prefers-color-scheme" }
+}

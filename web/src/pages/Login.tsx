@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useAuth } from "@/lib/auth";
+import { Guilloche, Seal } from "@/lib/engraving";
 
 export default function Login() {
   const { signIn } = useAuth();
@@ -18,25 +19,41 @@ export default function Login() {
   };
 
   return (
-    <div className="login">
-      <div className="login-card">
-        <div className="login-hero">
-          <span className="chip" aria-hidden />
-          <div className="mark">Kharcha</div>
-          <div className="tag">Your money, your data.</div>
-          <div className="digits" aria-hidden>
+    <div className="app">
+      <div className="login">
+        <div className="note">
+          <Guilloche w={360} h={210} stroke="rgba(241,234,214,.5)" sw={0.55} layers={5} f={7} R={150} />
+          <div className="frameline" />
+          <div className="masthead">
+            <div>
+              <div className="m-name">Kharcha</div>
+              <div className="m-sub">Register of Account</div>
+            </div>
+            <Seal state="ISSUE" />
+          </div>
+          <div className="denomlabel">Bearer</div>
+          <div className="value">
+            Your money,
+            <br />
+            <span style={{ color: "rgba(241,234,214,.72)" }}>your data.</span>
+          </div>
+          <div className="serial tnum" style={{ marginTop: 16 }}>
             •••• •••• •••• 2048
+          </div>
+          <div className="microprint">
+            self-owned · offline-first · survives a phone switch · self-owned · offline-first · survives a phone switch
           </div>
         </div>
 
-        <form className="login-body" onSubmit={submit}>
+        <form onSubmit={submit}>
           <h2>Welcome back</h2>
-          <p className="sub">Sign in to continue.</p>
+          <p className="sub">Sign in to open your register.</p>
 
           <div className="field">
             <label htmlFor="email">Email</label>
             <input
               id="email"
+              className="inp"
               type="email"
               autoComplete="email"
               required
@@ -48,6 +65,7 @@ export default function Login() {
             <label htmlFor="password">Password</label>
             <input
               id="password"
+              className="inp"
               type="password"
               autoComplete="current-password"
               required
@@ -58,12 +76,12 @@ export default function Login() {
 
           {error ? <div className="error">{error}</div> : null}
 
-          <button className="btn block" type="submit" disabled={busy}>
+          <button className="btn" type="submit" disabled={busy}>
             {busy ? "Signing in…" : "Sign in"}
           </button>
+          <p className="foot">Self-owned finance · No subscription</p>
         </form>
       </div>
-      <p className="login-foot">Self-owned finance tracker</p>
     </div>
   );
 }

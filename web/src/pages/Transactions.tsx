@@ -4,13 +4,14 @@ import { format } from "date-fns";
 import { useLocalData } from "@/lib/use-data";
 import { listLocalTransactions } from "@/lib/local-queries";
 import { formatMoney } from "@/lib/money";
+import { Icon, typeIcon } from "@/lib/engraving";
 import type { TxRow } from "@/lib/tx-row";
 
 type Filter = "ALL" | "INCOME" | "EXPENSE" | "TRANSFER";
 const TABS: { key: Filter; label: string }[] = [
   { key: "ALL", label: "All" },
-  { key: "INCOME", label: "Income" },
-  { key: "EXPENSE", label: "Expense" },
+  { key: "INCOME", label: "In" },
+  { key: "EXPENSE", label: "Out" },
   { key: "TRANSFER", label: "Transfer" },
 ];
 
@@ -26,7 +27,7 @@ function groupByDay(rows: TxRow[]): DayGroup[] {
     const key = format(d, "yyyy-MM-dd");
     let g = index.get(key);
     if (!g) {
-      g = { key, label: format(d, "EEE, MMM d"), rows: [], net: 0, flow: false };
+      g = { key, label: format(d, "EEE · d MMMM"), rows: [], net: 0, flow: false };
       index.set(key, g);
       groups.push(g);
     }
@@ -67,46 +68,44 @@ export default function Transactions() {
 
   return (
     <>
-      <div className="section-title">Transactions</div>
+      <div className="appbar">
+        <div className="title">Entries</div>
+      </div>
 
-      <div className="toolbar">
-        <div className="segmented">
-          {TABS.map((t) => (
-            <button
-              key={t.key}
-              className={filter === t.key ? "on" : ""}
-              onClick={() => setFilter(t.key)}
-            >
-              {t.label}
-            </button>
-          ))}
-        </div>
+      <div className="seg">
+        {TABS.map((t) => (
+          <button key={t.key} className={filter === t.key ? "on" : ""} onClick={() => setFilter(t.key)}>
+            {t.label}
+          </button>
+        ))}
+      </div>
+      <label className="searchbar">
+        <Icon name="search" />
         <input
-          className="searchbar"
           type="search"
-          placeholder="Search category, account, or note…"
+          placeholder="Search entry, book, or note…"
           value={q}
           onChange={(e) => setQ(e.target.value)}
         />
-      </div>
+      </label>
 
       {groups.length === 0 ? (
         <div className="list-empty">
-          {q || filter !== "ALL" ? "No matching transactions." : "No transactions yet."}
+          {q || filter !== "ALL" ? "No matching entries." : "Nothing here yet. Tap + to add your first entry."}
         </div>
       ) : (
         groups.map((g) => (
           <div key={g.key}>
-            <div className="day-head">
+            <div className="dayhead">
               <span className="d">{g.label}</span>
               {g.flow && (
-                <span className={`t ${g.net >= 0 ? "income" : "expense"}`}>
+                <span className={`t ${g.net >= 0 ? "in" : "out"}`}>
                   {g.net >= 0 ? "+" : "−"}
                   {formatMoney(Math.abs(g.net), baseCurrency)}
                 </span>
               )}
             </div>
-            <div className="card">
+            <div className="ledger">
               {g.rows.map((t) => (
                 <Row key={t.id} t={t} />
               ))}
@@ -115,36 +114,26 @@ export default function Transactions() {
         ))
       )}
 
-      <Link to="/transactions/new" className="btn fab">+ Add</Link>
+      <Link to="/transactions/new" className="fab no-print" aria-label="New entry"><Icon name="plus" /></Link>
     </>
   );
 }
 
 function Row({ t }: { t: TxRow }) {
-  const title =
-    t.type === "TRANSFER" ? `${t.account} → ${t.toAccount}` : t.category ?? "Uncategorized";
+  const title = t.type === "TRANSFER" ? `${t.account} → ${t.toAccount}` : t.category ?? "Uncategorized";
   const sub = [t.account, t.note].filter(Boolean).join(" · ");
   const sign = t.type === "INCOME" ? "+" : t.type === "EXPENSE" ? "−" : "";
-  const cls = t.type === "INCOME" ? "income" : t.type === "EXPENSE" ? "expense" : "";
+  const cls = t.type === "INCOME" ? "in" : t.type === "EXPENSE" ? "out" : "tr";
+  const color = t.type !== "TRANSFER" ? t.categoryColor ?? "var(--sepia)" : "var(--transfer)";
 
   return (
-    <div className="row">
-      <span
-        className="dot"
-        style={{ background: t.type !== "TRANSFER" ? t.categoryColor ?? "var(--faint)" : "var(--faint)" }}
-      />
-      <div className="grow">
-        <div className="name">{title}</div>
-        <div className="sub">
-          {sub}
-          {sub ? " · " : ""}
-          {format(new Date(t.date), "MMM d")}
-        </div>
+    <Link to={`/transactions/${t.id}`} className="lrow">
+      <span className="ic" style={{ color }}><Icon name={typeIcon(t.type)} /></span>
+      <div className="body">
+        <div className="nm">{title}</div>
+        <div className="sub">{sub}{sub ? " · " : ""}{format(new Date(t.date), "d MMM")}</div>
       </div>
-      <span className={`amt tnum ${cls}`}>
-        {sign}
-        {formatMoney(t.amount, t.currency)}
-      </span>
-    </div>
+      <span className={`amt tnum ${cls}`}>{sign}{formatMoney(t.amount, t.currency)}</span>
+    </Link>
   );
 }

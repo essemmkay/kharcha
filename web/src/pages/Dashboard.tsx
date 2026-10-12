@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { addMonths, format } from "date-fns";
 import { useLocalData } from "@/lib/use-data";
 import {
@@ -8,6 +9,7 @@ import {
   listLocalTransactions,
 } from "@/lib/local-queries";
 import { formatMoney } from "@/lib/money";
+import { Guilloche, Seal, Icon, typeIcon, monogram, accountColor } from "@/lib/engraving";
 
 export default function Dashboard() {
   const { ready, accounts, transactions, categories, baseCurrency } = useLocalData();
@@ -24,106 +26,128 @@ export default function Dashboard() {
 
   return (
     <>
-      <div className="card hero">
-        <div className="label">Net worth</div>
+      <div className="appbar">
+        <div>
+          <div className="kicker">{format(new Date(), "EEEE · d MMMM yyyy")}</div>
+          <div className="lede">Your register</div>
+        </div>
+      </div>
+
+      {/* The banknote */}
+      <div className="note">
+        <Guilloche w={360} h={210} stroke="rgba(241,234,214,.5)" sw={0.55} layers={5} f={7} R={150} />
+        <div className="frameline" />
+        <div className="masthead">
+          <div>
+            <div className="m-name">Kharcha</div>
+            <div className="m-sub">Register of Account</div>
+          </div>
+          <Seal state="ISSUED" />
+        </div>
+        <div className="denomlabel">Net worth</div>
         <div className="value tnum">{money(total)}</div>
-        <div className={`delta ${up ? "up" : "down"}`}>
-          <span>{up ? "▲" : "▼"} {money(Math.abs(summary.net))}</span>
-          <span className="sub2">{format(month, "MMM")} net</span>
+        <div className="meta">
+          <div className={`delta ${up ? "up" : "down"}`}>
+            {up ? "▲" : "▼"} <b className="tnum">{money(Math.abs(summary.net))}</b> · {format(month, "MMMM")} net
+          </div>
+          <div className="issue">
+            Issued
+            <br />
+            {format(new Date(), "d MMM yyyy")}
+          </div>
+        </div>
+        <div className="microprint">
+          your money your data · kharcha · your money your data · kharcha · your money your data · kharcha
         </div>
       </div>
 
       {accts.length > 0 && (
-        <div className="acct-strip">
+        <div className="strip">
           {accts.map((a) => (
-            <div className="acct-card" key={a.id}>
-              <div className="nm">{a.name}</div>
+            <Link to={`/accounts/${a.id}`} className="acct" key={a.id}>
+              <Guilloche w={152} h={90} stroke="rgba(14,59,43,.45)" sw={0.5} layers={4} f={6} R={76} />
+              <div className="top">
+                <span className="mono" style={{ background: accountColor(a.id) }}>{monogram(a.name)}</span>
+                <span className="nm">{a.name}</span>
+              </div>
               <div className="bal tnum">{formatMoney(a.balance, a.currency)}</div>
-            </div>
+            </Link>
           ))}
         </div>
       )}
 
-      <div className="month-nav">
-        <button aria-label="Previous month" onClick={() => setMonth((m) => addMonths(m, -1))}>←</button>
-        <strong>{format(month, "MMMM yyyy")}</strong>
-        <button aria-label="Next month" onClick={() => setMonth((m) => addMonths(m, 1))}>→</button>
+      <div className="month">
+        <button aria-label="Previous month" onClick={() => setMonth((m) => addMonths(m, -1))}>
+          <Icon name="chevL" />
+        </button>
+        <span className="m">{format(month, "MMMM yyyy")}</span>
+        <button aria-label="Next month" onClick={() => setMonth((m) => addMonths(m, 1))}>
+          <Icon name="chevR" />
+        </button>
       </div>
 
-      <div className="card">
-        <div className="summary-grid">
-          <div>
-            <div className="k">Income</div>
-            <div className="v tnum" style={{ color: "var(--income)" }}>{money(summary.income)}</div>
-          </div>
-          <div>
-            <div className="k">Expense</div>
-            <div className="v tnum" style={{ color: "var(--danger)" }}>{money(summary.expense)}</div>
-          </div>
-          <div>
-            <div className="k">Net</div>
-            <div className="v tnum">{money(summary.net)}</div>
-          </div>
-        </div>
+      <div className="counters">
+        <div className="c"><div className="k">In</div><div className="v in tnum">{money(summary.income)}</div></div>
+        <div className="c"><div className="k">Out</div><div className="v out tnum">{money(summary.expense)}</div></div>
+        <div className="c"><div className="k">Net</div><div className="v tnum">{money(summary.net)}</div></div>
       </div>
 
-      <div className="section-title">Spending by category</div>
-      <div className="card">
+      <div className="shead">
+        <span className="t">Spending by book</span>
+        <span className="ln" />
+        <Link to="/reports">All</Link>
+      </div>
+      <div className="ledger">
         {summary.byCategory.length === 0 ? (
-          <p className="muted" style={{ margin: 0 }}>No expenses this month.</p>
+          <div className="cat"><span className="muted" style={{ fontStyle: "italic" }}>No expenses this month.</span></div>
         ) : (
           summary.byCategory.map((c) => {
             const pct = summary.expense > 0 ? (c.total / summary.expense) * 100 : 0;
-            const color = c.color ?? "var(--faint)";
+            const color = c.color ?? "var(--sepia)";
             return (
               <div className="cat" key={c.id}>
                 <div className="top">
-                  <span className="dot" style={{ background: color }} />
-                  <span className="name">{c.name}</span>
-                  <span className="muted" style={{ fontSize: 12.5, fontWeight: 600 }}>
-                    {Math.round(pct)}%
-                  </span>
+                  <span className="sw" style={{ background: color }} />
+                  <span className="nm">{c.name}</span>
+                  <span className="pct">{Math.round(pct)}%</span>
                   <span className="amt tnum">{money(c.total)}</span>
                 </div>
-                <div className="track">
-                  <div className="fill" style={{ width: `${pct}%`, background: color }} />
-                </div>
+                <div className="track"><div className="fill" style={{ width: `${pct}%`, color }} /></div>
               </div>
             );
           })
         )}
       </div>
 
-      <div className="section-title">Recent activity</div>
-      <div className="card">
+      <div className="shead">
+        <span className="t">Recent entries</span>
+        <span className="ln" />
+        <Link to="/transactions">Ledger</Link>
+      </div>
+      <div className="ledger">
         {recent.length === 0 ? (
-          <p className="muted" style={{ margin: 0 }}>No transactions yet.</p>
+          <div className="lrow" style={{ cursor: "default" }}><span className="muted" style={{ fontStyle: "italic" }}>No entries yet.</span></div>
         ) : (
           recent.map((r) => {
             const sign = r.type === "INCOME" ? "+" : r.type === "EXPENSE" ? "−" : "";
-            const cls = r.type === "INCOME" ? "income" : r.type === "EXPENSE" ? "expense" : "";
-            const title =
-              r.type === "TRANSFER"
-                ? `${r.account} → ${r.toAccount ?? "?"}`
-                : r.category ?? r.note ?? "Uncategorized";
+            const cls = r.type === "INCOME" ? "in" : r.type === "EXPENSE" ? "out" : "tr";
+            const title = r.type === "TRANSFER" ? `${r.account} → ${r.toAccount ?? "?"}` : r.category ?? r.note ?? "Uncategorized";
+            const color = r.type !== "TRANSFER" ? r.categoryColor ?? "var(--sepia)" : "var(--transfer)";
             return (
-              <div className="row" key={r.id}>
-                <span className="dot" style={{ background: r.categoryColor ?? "var(--faint)" }} />
-                <div className="grow">
-                  <div className="name">{title}</div>
-                  <div className="sub">
-                    {r.account} · {format(new Date(r.date), "MMM d")}
-                  </div>
+              <Link to={`/transactions/${r.id}`} className="lrow" key={r.id}>
+                <span className="ic" style={{ color }}><Icon name={typeIcon(r.type)} /></span>
+                <div className="body">
+                  <div className="nm">{title}</div>
+                  <div className="sub">{r.account} · {format(new Date(r.date), "d MMM")}</div>
                 </div>
-                <span className={`amt tnum ${cls}`}>
-                  {sign}
-                  {money(r.amount)}
-                </span>
-              </div>
+                <span className={`amt tnum ${cls}`}>{sign}{formatMoney(r.amount, r.currency)}</span>
+              </Link>
             );
           })
         )}
       </div>
+
+      <Link to="/transactions/new" className="fab no-print" aria-label="New entry"><Icon name="plus" /></Link>
     </>
   );
 }

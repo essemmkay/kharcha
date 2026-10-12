@@ -25,17 +25,41 @@ async function request<T>(
   method: "GET" | "POST",
   path: string,
   body?: unknown,
+  retried = false,
 ): Promise<ActionResult<T>> {
   if (!BASE) throw new MissingApiUrlError("EXPO_PUBLIC_API_URL not set");
-  const res = await fetch(`${BASE}${path}`, {
-    method,
-    headers: {
-      ...(body !== undefined ? { "content-type": "application/json" } : {}),
-      ...(await authHeaders()),
-    },
-    body: body !== undefined ? JSON.stringify(body) : undefined,
-  });
-  // 5xx and 401 are transient (server hiccup / token mid-refresh): retry later.
+  const headers = {
+    ...(body !== undefined ? { "content-type": "application/json" } : {}),
+    ...(await authHeaders()),
+  };
+  // ponytail: temporary sync diagnostics — remove once the device sync is healthy.
+  const hasToken = "Authorization" in headers;
+  let res: Response;
+  try {
+    res = await fetch(`${BASE}${path}`, {
+      method,
+      headers,
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+    });
+  } catch (e) {
+    console.warn(
+      `[sync] ${method} ${BASE}${path} NETWORK error (token:${hasToken}):`,
+      e instanceof Error ? e.message : e,
+    );
+    throw e;
+  }
+  if (res.status !== 200) {
+    console.warn(`[sync] ${method} ${path} -> HTTP ${res.status} (token:${hasToken}, retried:${retried})`);
+  }
+  // A 401 is usually just an expired access token. Force one refresh and retry
+  // with the new token before treating it as transient; otherwise an expired
+  // session leaves every push/pull stuck on "Sync error" forever.
+  if (res.status === 401 && !retried) {
+    const { data } = await supabase.auth.refreshSession();
+    if (data.session) return request<T>(method, path, body, true);
+  }
+  // 5xx and a still-unauthorized 401 are transient (server hiccup / dead
+  // session that needs a manual re-login): retry later.
   if (res.status >= 500 || res.status === 401) {
     throw new Error(`Transient HTTP ${res.status}`);
   }

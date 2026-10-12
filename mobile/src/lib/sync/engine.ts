@@ -1,6 +1,7 @@
 import { randomUUID } from "expo-crypto";
 import {
   getDb,
+  getAll,
   getMeta,
   setMeta,
   upsert,
@@ -9,6 +10,7 @@ import {
   listQueue,
   deleteQueue,
   setQueueError,
+  clearQueueErrors,
 } from "@/lib/db";
 import { apiGet, apiPost, type ActionResult } from "@/lib/api";
 import type { Entity, Mutation, Op, SyncSnapshot } from "@/lib/sync/types";
@@ -23,6 +25,7 @@ import type { Entity, Mutation, Op, SyncSnapshot } from "@/lib/sync/types";
 
 let syncing = false;
 let lastError: string | null = null;
+let rearmedThisLaunch = false; // ponytail: temporary, see sync()
 const listeners = new Set<() => void>();
 function emit() {
   for (const l of listeners) l();
@@ -150,6 +153,34 @@ export function sync(): Promise<void> {
   emit();
   running = (async () => {
     try {
+      // ponytail: temporary recovery — re-arm mutations parked by the pre-fix
+      // server (which rejected null optional fields) once per launch, so the
+      // deployed optionalText fix gets a chance to re-push them. Remove once the
+      // device queue is clean.
+      if (!rearmedThisLaunch) {
+        rearmedThisLaunch = true;
+        const n = await clearQueueErrors();
+        if (n) console.warn(`[sync] re-armed ${n} parked mutation(s)`);
+      }
+      // ponytail: temporary sync diagnostics — remove once device sync is healthy.
+      try {
+        const [q, a, c, t] = await Promise.all([
+          listQueue(),
+          getAll("accounts"),
+          getAll("categories"),
+          getAll("transactions"),
+        ]);
+        console.warn(
+          `[sync] start: queue=${q.length} errored=${q.filter((m) => m.error).length} | local accounts=${a.length} categories=${c.length} transactions=${t.length}`,
+        );
+        q.filter((m) => m.error)
+          .slice(0, 25)
+          .forEach((m) =>
+            console.warn(`[sync] PARKED ${m.entity}/${m.op} ${m.recordId}: ${m.error}`),
+          );
+      } catch {
+        /* diagnostics only */
+      }
       await push();
       await pull();
     } finally {

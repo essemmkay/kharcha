@@ -153,6 +153,14 @@ export async function setQueueError(seq: number, error: string): Promise<void> {
   await db.runAsync(`UPDATE queue SET error = ? WHERE seq = ?`, [error, seq]);
 }
 
+// Re-arm parked mutations (clear the error flag) so push() retries them. Used to
+// recover after a server-side fix; never deletes, so no queued work is lost.
+export async function clearQueueErrors(): Promise<number> {
+  const db = await getDb();
+  const r = await db.runAsync(`UPDATE queue SET error = NULL WHERE error IS NOT NULL`);
+  return r.changes ?? 0;
+}
+
 // ---- Meta -----------------------------------------------------------------
 
 export async function getMeta(): Promise<SyncMeta> {

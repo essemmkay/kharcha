@@ -25,6 +25,7 @@ async function request<T>(
   method: "GET" | "POST",
   path: string,
   body?: unknown,
+  retried = false,
 ): Promise<ActionResult<T>> {
   if (!BASE) throw new MissingApiUrlError("VITE_API_URL not set");
   const res = await fetch(`${BASE}${path}`, {
@@ -35,7 +36,15 @@ async function request<T>(
     },
     body: body !== undefined ? JSON.stringify(body) : undefined,
   });
-  // 5xx and 401 are transient (server hiccup / token mid-refresh): retry later.
+  // A 401 is usually just an expired access token. Force one refresh and retry
+  // with the new token before treating it as transient; otherwise an expired
+  // session leaves every push/pull stuck on "Sync error" forever.
+  if (res.status === 401 && !retried) {
+    const { data } = await supabase.auth.refreshSession();
+    if (data.session) return request<T>(method, path, body, true);
+  }
+  // 5xx and a still-unauthorized 401 are transient (server hiccup / dead
+  // session that needs a manual re-login): retry later.
   if (res.status >= 500 || res.status === 401) {
     throw new Error(`Transient HTTP ${res.status}`);
   }

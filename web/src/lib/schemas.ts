@@ -4,11 +4,16 @@ export const accountTypes = ["BANK", "CASH", "ASSET"] as const;
 export const categoryKinds = ["INCOME", "EXPENSE"] as const;
 export const transactionTypes = ["INCOME", "EXPENSE", "TRANSFER"] as const;
 
+// nullish (not just optional): the client transforms empty input to `null` and
+// stores/pushes that, so the server re-validates a payload where this field is
+// `null`. `.optional()` would reject `null` ("expected string, received null"),
+// which parks every offline mutation that left an optional field blank. `.nullish()`
+// accepts string | null | undefined, keeping the schema idempotent under replay.
 const optionalText = (max: number) =>
   z
     .string()
     .max(max)
-    .optional()
+    .nullish()
     .transform((v) => (v && v.trim() !== "" ? v.trim() : null));
 
 // Optional client-authoritative id: offline-first creates mint the id in the
